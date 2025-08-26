@@ -1,5 +1,14 @@
+import { User } from "next-auth";
 import { firestoreAdmin } from "./init";
 import bcrypt from "bcrypt";
+
+const checkEmailExist = async (email: string) => {
+  return await firestoreAdmin
+    .collection("users")
+    .where("email", "==", email)
+    .limit(1)
+    .get();
+};
 
 type userType = {
   email: string;
@@ -9,11 +18,7 @@ type userType = {
 };
 
 export async function signUp(data: userType) {
-  const snapshot = await firestoreAdmin
-    .collection("users")
-    .where("email", "==", data.email)
-    .limit(1)
-    .get();
+  const snapshot = await checkEmailExist(data.email);
 
   if (!snapshot.empty) {
     return { status: false, statusCode: 400, message: "Email already exists" };
@@ -31,4 +36,14 @@ export async function signUp(data: userType) {
   } catch {
     return { status: false, statusCode: 400, message: "Sign up error" };
   }
+}
+
+export async function signIn(email: string): Promise<User | null> {
+  const snapshot = await checkEmailExist(email);
+
+  if (!snapshot.empty) {
+    const userData = snapshot.docs[0];
+    return { id: userData.id, ...(userData.data() as Omit<User, "id">) };
+  }
+  return null;
 }

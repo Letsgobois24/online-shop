@@ -5,6 +5,7 @@ import InputField from "@/components/InputField";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import Alert from "@/components/Alert";
+import AuthButton from "../AuthButton";
 
 export default function SignUpPages() {
   const { push } = useRouter();
@@ -85,13 +86,7 @@ export default function SignUpPages() {
           required={true}
         />
 
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="bg-blue-600 hover:bg-blue-700 w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 cursor-pointer"
-        >
-          {isLoading ? "Loading..." : "Sign Up"}
-        </button>
+        <AuthButton isLoading={isLoading} type="Sign Up" />
         <p className="text-center text-sm font-light text-gray-500">
           Have an account?{" "}
           <Link

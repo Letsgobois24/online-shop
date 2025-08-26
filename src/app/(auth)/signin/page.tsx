@@ -1,12 +1,55 @@
-import Link from "next/link";
+"use client";
 
-export default function SignInPages() {
+import { signIn } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { FormEvent, useState } from "react";
+import AuthButton from "../AuthButton";
+import Alert from "@/components/Alert";
+
+export default function SignInPages({
+  searchParams,
+}: {
+  searchParams: Promise<{ callbackUrl?: string; error?: string }>;
+}) {
+  const params = React.use(searchParams);
+  const { push } = useRouter();
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const callbackUrl = params.callbackUrl || "/";
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    const form = e.target as HTMLFormElement;
+    try {
+      const res = await signIn("credentials", {
+        redirect: false,
+        email: form.email.value,
+        password: form.password.value,
+        callbackUrl,
+      });
+      console.log(res);
+      if (!res?.error) {
+        push(callbackUrl);
+      } else {
+        setError("Email or password is incorrect");
+        form.password.value = "";
+      }
+      setIsLoading(false);
+    } catch (err) {
+      console.log({ err });
+    }
+  };
+
   return (
     <>
       <h1 className="text-center text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
         Sign in to your account
       </h1>
-      <form className="space-y-4">
+      {error && <Alert>{error}</Alert>}
+      <form className="space-y-4" onSubmit={(e) => handleSubmit(e)}>
         <div>
           <label
             htmlFor="email"
@@ -39,20 +82,17 @@ export default function SignInPages() {
             required
           />
         </div>
-        <button
-          type="submit"
-          className="bg-blue-600 hover:bg-blue-700 cursor-pointer w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        >
-          Sign In
-        </button>
-        <button
+
+        <AuthButton isLoading={isLoading} type="Sign In" />
+
+        {/* <button
           type="button"
           className="bg-blue-600 hover:bg-blue-700 cursor-pointer w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
           Login with Google
-        </button>
+        </button> */}
         <p className="text-center text-sm font-light text-gray-500 dark:text-gray-400">
-          Don’t have an account yet?{" "}
+          Don’t have an account?{" "}
           <Link
             href="/signup"
             className="font-medium text-blue-600 hover:underline dark:text-blue-500"
