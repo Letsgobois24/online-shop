@@ -30,7 +30,6 @@ export default function SignInPages({
         password: form.password.value,
         callbackUrl,
       });
-      console.log(res);
       if (!res?.error) {
         push(callbackUrl);
       } else {
@@ -85,12 +84,13 @@ export default function SignInPages({
 
         <AuthButton isLoading={isLoading} type="Sign In" />
 
-        {/* <button
+        <button
           type="button"
+          onClick={() => signIn("google", { callbackUrl, redirect: false })}
           className="bg-blue-600 hover:bg-blue-700 cursor-pointer w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
           Login with Google
-        </button> */}
+        </button>
         <p className="text-center text-sm font-light text-gray-500 dark:text-gray-400">
           Don’t have an account?{" "}
           <Link

@@ -47,3 +47,19 @@ export async function signIn(email: string): Promise<User | null> {
   }
   return null;
 }
+
+export async function signInWithGoogle(data: any) {
+  const snapshot = await checkEmailExist(data.email);
+
+  if (!snapshot.empty) {
+    const userData = snapshot.docs[0];
+    return { id: userData.id, ...(userData.data() as Omit<User, "id">) };
+  }
+
+  const docRef = await firestoreAdmin.collection("users").add({
+    ...data,
+    createdAt: new Date(),
+  });
+  data.role = "member";
+  return { id: docRef.id, ...data };
+}
