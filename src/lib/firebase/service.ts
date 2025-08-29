@@ -23,7 +23,7 @@ export async function getDataByEmail(email: string) {
 export async function addData(collectionName: string, data: User) {
   data.created_at = new Date();
   data.updated_at = new Date();
-  const docRef = await firestoreAdmin.collection(collectionName).add(data);
+  await firestoreAdmin.collection(collectionName).add(data);
 
   return data;
 }

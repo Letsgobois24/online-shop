@@ -1,4 +1,4 @@
-import { addData, getDataByEmail, userType } from "@/lib/firebase/service";
+import { addData, getDataByEmail } from "@/lib/firebase/service";
 import bcrypt from "bcrypt";
 import { User } from "next-auth";
 
