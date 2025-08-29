@@ -8,15 +8,19 @@ declare module "next-auth" {
       role?: string | null;
       email?: string | null;
       phone?: string | null;
+      type?: "google";
     };
   }
 
   interface User {
-    id: string;
+    id?: string;
     fullname?: string | null;
-    role?: string | null;
-    email?: string | null;
+    role?: "member" | "admin";
+    email: string;
     phone?: string | null;
-    password?: string | null;
+    password?: string;
+    type?: "google";
+    created_at?: Date;
+    updated_at?: Date;
   }
 }

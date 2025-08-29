@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import InputField from "@/components/InputField";
+import InputField from "@/components/Fragments/InputField";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
-import Alert from "@/components/Alert";
-import AuthButton from "../AuthButton";
+import Alert from "@/components/Fragments/Alert";
+import Button from "@/components/Fragments/Button";
 
 export default function SignUpPages() {
   const { push } = useRouter();
@@ -74,19 +74,23 @@ export default function SignUpPages() {
           placeholder="Your phone number"
         />
         <InputField
+          type="password"
           label="Password"
           name="password"
           placeholder="••••••••"
           required={true}
         />
         <InputField
+          type="password"
           label="Confirm Password"
           name="confirm-password"
           placeholder="••••••••"
           required={true}
         />
 
-        <AuthButton isLoading={isLoading} type="Sign Up" />
+        <Button type="submit" isLoading={isLoading} className="w-full">
+          Sign Up
+        </Button>
         <p className="text-center text-sm font-light text-gray-500">
           Have an account?{" "}
           <Link

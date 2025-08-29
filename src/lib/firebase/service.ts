@@ -1,65 +1,29 @@
 import { User } from "next-auth";
 import { firestoreAdmin } from "./init";
-import bcrypt from "bcrypt";
 
-const checkEmailExist = async (email: string) => {
+export type userType = {
+  fullname?: string | null | undefined;
+  email?: string | null;
+  phone: string;
+  password: string;
+  role?: "member" | "admin";
+  type?: "google";
+  created_at?: Date;
+  updated_at?: Date;
+};
+
+export async function getDataByEmail(email: string) {
   return await firestoreAdmin
     .collection("users")
     .where("email", "==", email)
     .limit(1)
     .get();
-};
-
-type userType = {
-  email: string;
-  phone: string;
-  password: string;
-  role?: string;
-};
-
-export async function signUp(data: userType) {
-  const snapshot = await checkEmailExist(data.email);
-
-  if (!snapshot.empty) {
-    return { status: false, statusCode: 400, message: "Email already exists" };
-  }
-
-  try {
-    data.role = "member";
-    data.password = await bcrypt.hash(data.password, 10);
-    await firestoreAdmin.collection("users").add({
-      ...data,
-      createdAt: new Date(),
-    });
-
-    return { status: true, statusCode: 200, message: "Sign up success" };
-  } catch {
-    return { status: false, statusCode: 400, message: "Sign up error" };
-  }
 }
 
-export async function signIn(email: string): Promise<User | null> {
-  const snapshot = await checkEmailExist(email);
+export async function addData(collectionName: string, data: User) {
+  data.created_at = new Date();
+  data.updated_at = new Date();
+  const docRef = await firestoreAdmin.collection(collectionName).add(data);
 
-  if (!snapshot.empty) {
-    const userData = snapshot.docs[0];
-    return { id: userData.id, ...(userData.data() as Omit<User, "id">) };
-  }
-  return null;
-}
-
-export async function signInWithGoogle(data: any) {
-  const snapshot = await checkEmailExist(data.email);
-
-  if (!snapshot.empty) {
-    const userData = snapshot.docs[0];
-    return { id: userData.id, ...(userData.data() as Omit<User, "id">) };
-  }
-
-  const docRef = await firestoreAdmin.collection("users").add({
-    ...data,
-    createdAt: new Date(),
-  });
-  data.role = "member";
-  return { id: docRef.id, ...data };
+  return data;
 }

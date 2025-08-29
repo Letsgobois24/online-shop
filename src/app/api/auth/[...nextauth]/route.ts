@@ -1,7 +1,7 @@
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import { signIn, signInWithGoogle } from "@/lib/firebase/service";
+import { signIn, signInWithGoogle } from "@/services/auth";
 import { compare } from "bcrypt";
 import type { Session, User } from "next-auth";
 // import { NextAuthOptions } from "next-auth";
@@ -53,7 +53,7 @@ const authOptions: any = {
         token.email = user.email;
         token.fullname = user.fullname;
         token.phone = user.phone;
-        token.role = user.role;
+        token.role = user.role || "member";
       }
 
       if (account?.provider === "google") {
@@ -65,7 +65,7 @@ const authOptions: any = {
 
         token.email = data.email;
         token.fullname = data.fullname;
-        token.role = data.role;
+        token.role = data.role || "member";
         token.phone = data.phone;
       }
 
