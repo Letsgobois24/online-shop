@@ -1,6 +1,6 @@
-import React from "react";
+import type React from "react";
 
-export default function SignUpLayout({
+export default function AuthLayout({
   children,
 }: {
   children: React.ReactNode;

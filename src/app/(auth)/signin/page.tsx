@@ -44,9 +44,6 @@ export default function SignInPages({
 
   return (
     <>
-      <h1 className="text-center text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-        Sign in to your account
-      </h1>
       {error && <Alert>{error}</Alert>}
       <form className="space-y-4" onSubmit={(e) => handleSubmit(e)}>
         <div>
@@ -92,15 +89,6 @@ export default function SignInPages({
         >
           Login with Google
         </Button>
-        <p className="text-center text-sm font-light text-gray-500 dark:text-gray-400">
-          Don’t have an account?{" "}
-          <Link
-            href="/signup"
-            className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-          >
-            Sign up
-          </Link>
-        </p>
       </form>
     </>
   );

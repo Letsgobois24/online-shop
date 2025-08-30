@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import Alert from "@/components/Fragments/Alert";
 import Button from "@/components/Fragments/Button";
+import authServices from "@/services/auth";
 
 export default function SignUpPages() {
   const { push } = useRouter();
@@ -24,19 +25,10 @@ export default function SignUpPages() {
       password: form.password.value,
     };
 
-    const res = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    const res = await authServices.registerAccount(data);
+    console.log(res);
 
-    const result: {
-      status: boolean;
-      statusCode: number;
-      message: string;
-    } = await res.json();
+    const result = res.data;
 
     if (result.status) {
       form.reset();
@@ -48,10 +40,7 @@ export default function SignUpPages() {
   };
 
   return (
-    <div>
-      <h1 className="mb-4 text-center text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-        Create New Account
-      </h1>
+    <>
       {error && <Alert>{error}</Alert>}
       <form className="space-y-3" onSubmit={(e) => handleSubmit(e)}>
         <InputField
@@ -91,16 +80,7 @@ export default function SignUpPages() {
         <Button type="submit" isLoading={isLoading} className="w-full">
           Sign Up
         </Button>
-        <p className="text-center text-sm font-light text-gray-500">
-          Have an account?{" "}
-          <Link
-            href="/signin"
-            className="font-medium text-blue-600 hover:underline"
-          >
-            Sign In
-          </Link>
-        </p>
       </form>
-    </div>
+    </>
   );
 }
