@@ -1,4 +1,3 @@
-import Link from "next/link";
 import AuthTitle from "../components/AuthTitle";
 import AuthLink from "../components/AuthLink";
 
