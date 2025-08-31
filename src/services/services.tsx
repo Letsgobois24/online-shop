@@ -6,14 +6,14 @@ export async function signUp(data: User) {
   const snapshot = await getDataByEmail(data.email ?? "");
 
   if (!snapshot.empty) {
-    return { status: false, statusCode: 400, message: "Email already exists" };
+    return { success: false, statusCode: 400, message: "Email already exists" };
   }
 
   try {
     data.role = "member";
     if (!data.password) {
       return {
-        status: false,
+        success: false,
         statusCode: 400,
         message: "Password is required",
       };
@@ -22,9 +22,9 @@ export async function signUp(data: User) {
     data.password = await bcrypt.hash(data.password, 10);
     await addData("users", data);
 
-    return { status: true, statusCode: 200, message: "Sign up success" };
+    return { success: true, statusCode: 200, message: "Sign up success" };
   } catch {
-    return { status: false, statusCode: 400, message: "Sign up error" };
+    return { success: false, statusCode: 400, message: "Sign up error" };
   }
 }
 

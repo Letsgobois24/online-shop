@@ -5,9 +5,11 @@ export async function POST(request: NextRequest) {
   const req = await request.json();
   const res = await signUp(req);
 
-  return NextResponse.json({
-    status: res.status,
-    message: res.message,
-    statusCode: res.statusCode,
-  });
+  return NextResponse.json(
+    {
+      success: res.success,
+      message: res.message,
+    },
+    { status: res.statusCode }
+  );
 }

@@ -25,15 +25,12 @@ export default function SignUpPages() {
     };
 
     const res = await authServices.registerAccount(data);
-    console.log(res);
 
-    const result = res.data;
-
-    if (result.status) {
+    if (res.success) {
       form.reset();
       push("/signin");
     } else {
-      setError(`Error ${result.statusCode}: ${result.message}`);
+      setError(`Error ${res.status}: ${res.message}`);
     }
     setIsLoading(false);
   };
