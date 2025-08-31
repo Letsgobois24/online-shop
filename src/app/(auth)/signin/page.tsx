@@ -3,8 +3,8 @@
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
-import Alert from "@/components/Fragments/Alert";
-import Button from "@/components/Fragments/Button";
+import Alert from "@/components/Elements/Alert";
+import Button from "@/components/Elements/Button";
 
 export default function SignInPages({
   searchParams,

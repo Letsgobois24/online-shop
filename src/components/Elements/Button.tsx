@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 type ButtonType = {
   children: ReactNode;
-  type: "submit" | "reset" | "button" | undefined;
+  type?: "submit" | "reset" | "button" | undefined;
   onClick?: () => void;
   variant?: "primary" | "secondary";
   className?: string;
@@ -28,7 +28,7 @@ const Button = ({
       onClick={onClick}
       className={`${
         isLoading ? "bg-slate-300" : colors[variant]
-      } ${className} cursor-pointer text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center`}
+      } ${className} cursor-pointer text-white focus:ring-4 focus:outline-none font-medium rounded-lg px-5 py-2.5 text-center`}
     >
       {isLoading ? "Loading..." : children}
     </button>

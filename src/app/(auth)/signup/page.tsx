@@ -1,10 +1,10 @@
 "use client";
 
-import InputField from "@/components/Fragments/InputField";
+import InputField from "@/components/Elements/InputField";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
-import Alert from "@/components/Fragments/Alert";
-import Button from "@/components/Fragments/Button";
+import Alert from "@/components/Elements/Alert";
+import Button from "@/components/Elements/Button";
 import authServices from "@/services/auth";
 
 export default function SignUpPages() {

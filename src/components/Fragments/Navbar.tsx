@@ -1,28 +1,33 @@
 import { signIn, signOut, useSession } from "next-auth/react";
+import Button from "../Elements/Button";
 
 const Navbar = () => {
   const { data: session, status } = useSession();
 
   return (
     <nav className="bg-blue-900">
-      <ul className="h-15 flex justify-end items-center space-x-3 px-4">
+      <ul className="h-17 flex justify-end items-center space-x-3 px-4">
         {status === "authenticated" ? (
           <>
             <li className="text-white text-sm">{session?.user?.fullname}</li>
-            <button
+            <Button
               onClick={() => signOut()}
-              className="font-semibold rounded-md font-sans text-white px-3 py-1 bg-blue-600 hover:bg-blue-700 cursor-pointer"
+              type="button"
+              variant="primary"
+              className="w-fit text-sm font-semibold"
             >
               Sign Out
-            </button>
+            </Button>
           </>
         ) : (
-          <button
+          <Button
             onClick={() => signIn()}
-            className="font-semibold rounded-md font-sans text-white px-3 py-1 bg-blue-600 hover:bg-blue-700 cursor-pointer"
+            type="button"
+            variant="primary"
+            className="w-fit text-sm font-semibold"
           >
             Sign In
-          </button>
+          </Button>
         )}
       </ul>
     </nav>
