@@ -1,7 +1,7 @@
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import { signIn, signInWithGoogle } from "@/services/services";
+import { signIn, signInWithGoogle } from "@/services/auth/services";
 import { compare } from "bcrypt";
 import type { Session, User } from "next-auth";
 // import { NextAuthOptions } from "next-auth";

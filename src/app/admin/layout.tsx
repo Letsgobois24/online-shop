@@ -13,13 +13,18 @@ const listSidebarItem: ListsType = [
     url: "/admin/products",
     icon: "bag",
   },
+  {
+    title: "Users",
+    url: "/admin/users",
+    icon: "user",
+  },
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex">
       <Sidebar lists={listSidebarItem} />
-      <div>{children}</div>
+      <div className="py-8 px-10 w-full">{children}</div>
     </div>
   );
 }

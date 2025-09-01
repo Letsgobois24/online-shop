@@ -16,7 +16,7 @@ declare module "next-auth" {
     id?: string;
     fullname?: string | null;
     role?: "member" | "admin";
-    email: string;
+    email?: string;
     phone?: string | null;
     password?: string;
     type?: "google";

@@ -26,7 +26,7 @@ const Sidebar = ({ lists }: { lists: ListsType }) => {
               key={index}
               className={`${
                 pathname === list.url ? "bg-blue-500" : "hover:bg-blue-700"
-              } rounded-lg cursor-pointer`}
+              } rounded-lg cursor-pointer transition duration-300`}
             >
               <Link
                 href={list.url}

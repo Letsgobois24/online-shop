@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import Alert from "@/components/Elements/Alert";
 import Button from "@/components/Elements/Button";
-import authServices from "@/services/auth";
+import authServices from "@/services/auth/auth";
 
 export default function SignUpPages() {
   const { push } = useRouter();

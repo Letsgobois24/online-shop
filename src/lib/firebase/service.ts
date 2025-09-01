@@ -27,3 +27,14 @@ export async function addData(collectionName: string, data: User) {
 
   return data;
 }
+
+export async function getAllData(collectionName: string) {
+  const snapshot = await firestoreAdmin.collection("users").get();
+
+  const data = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  return data;
+}
