@@ -1,17 +1,6 @@
 import { User } from "next-auth";
 import { firestoreAdmin } from "./init";
 
-export type userType = {
-  fullname?: string | null | undefined;
-  email?: string | null;
-  phone: string;
-  password: string;
-  role?: "member" | "admin";
-  type?: "google";
-  created_at?: Date;
-  updated_at?: Date;
-};
-
 export async function getDataByEmail(email: string) {
   return await firestoreAdmin
     .collection("users")
@@ -29,7 +18,7 @@ export async function addData(collectionName: string, data: User) {
 }
 
 export async function getAllData(collectionName: string) {
-  const snapshot = await firestoreAdmin.collection("users").get();
+  const snapshot = await firestoreAdmin.collection(collectionName).get();
 
   const data = snapshot.docs.map((doc) => ({
     id: doc.id,
@@ -37,4 +26,57 @@ export async function getAllData(collectionName: string) {
   }));
 
   return data;
+}
+
+export async function getDataById(collectionName: string, id: string) {
+  const snapshot = await firestoreAdmin
+    .collection(collectionName)
+    .doc(id)
+    .get();
+
+  if (!snapshot.exists) {
+    return null;
+  }
+
+  return {
+    id: snapshot.id,
+    ...snapshot.data(),
+  };
+}
+
+export async function updateData(
+  collectionName: string,
+  id: string,
+  data: any
+) {
+  const snapshot = await firestoreAdmin
+    .collection(collectionName)
+    .doc(id)
+    .get();
+
+  if (snapshot.exists) {
+    try {
+      await snapshot.ref.update(data);
+      return {
+        success: true,
+        statusCode: 200,
+        message: "Data telah berhasil diubah",
+      };
+    } catch {
+      return {
+        success: false,
+        statusCode: 400,
+        message: "Data gagal untuk diubah",
+      };
+    }
+  }
+}
+
+export async function deleteData(collectionName: string, id: string) {
+  try {
+    await firestoreAdmin.collection(collectionName).doc(id).delete();
+    return true;
+  } catch {
+    return false;
+  }
 }

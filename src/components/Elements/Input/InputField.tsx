@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Label from "./Label";
 
 interface InputFieldProps {
   label: string;
@@ -8,6 +9,9 @@ interface InputFieldProps {
   name: string;
   placeholder?: string;
   required?: boolean;
+  defaultValue?: string;
+  className?: string;
+  disabled?: boolean;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -16,24 +20,24 @@ const InputField: React.FC<InputFieldProps> = ({
   name,
   placeholder,
   required = false,
+  defaultValue = "",
+  className = "",
+  disabled = false,
 }) => {
   return (
-    <div>
-      <label
-        htmlFor={name}
-        className="block mb-2 text-sm font-semibold text-gray-900"
-      >
-        {label}
-      </label>
+    <>
+      <Label name={name} label={label} />
       <input
         type={type}
         name={name}
         id={name}
-        className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        className={`${className} disabled:opacity-70 bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5`}
         placeholder={placeholder}
         required={required}
+        defaultValue={defaultValue}
+        disabled={disabled}
       />
-    </div>
+    </>
   );
 };
 
