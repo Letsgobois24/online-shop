@@ -30,6 +30,7 @@ const Select = ({
       <Label name={name} label={label} />
       <select
         id={name}
+        name={name}
         className={`${className} bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5`}
         disabled={disabled}
         defaultValue={defaultValue}

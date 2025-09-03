@@ -21,9 +21,13 @@ export default function ModalUpdatedUser({
     e.preventDefault();
     setIsLoading(true);
 
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
     const data = {
-      role: e.target.role.value,
+      role: formData.get("role") as string,
     };
+    console.log(data);
     const res = await userServices.updateUser(updatedUser.id || "", data);
     if (res.status === 200) {
       setUpdatedUser({});
