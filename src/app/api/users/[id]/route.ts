@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { deleteData } from "@/lib/firebase/service";
 
-type ParamsType = { params: { id: string } };
+// type ParamsType = { params: { id: string } };
 
-export async function DELETE(request: NextRequest, { params }: ParamsType) {
+export async function DELETE(request: NextRequest, { params }: any) {
   const { id } = params;
   const result = await deleteData("users", id);
   console.log(result);
