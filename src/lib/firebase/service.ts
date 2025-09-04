@@ -57,17 +57,9 @@ export async function updateData(
   if (snapshot.exists) {
     try {
       await snapshot.ref.update(data);
-      return {
-        success: true,
-        statusCode: 200,
-        message: "Data telah berhasil diubah",
-      };
+      return true;
     } catch {
-      return {
-        success: false,
-        statusCode: 400,
-        message: "Data gagal untuk diubah",
-      };
+      return false;
     }
   }
 }

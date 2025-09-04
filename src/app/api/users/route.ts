@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import { getAllData, updateData } from "@/lib/firebase/service";
+import { getAllData } from "@/lib/firebase/service";
 import { User } from "next-auth";
 
 export async function GET() {
@@ -15,18 +15,5 @@ export async function GET() {
       data: users,
     },
     { status: 200 }
-  );
-}
-
-export async function PUT(request: NextRequest) {
-  const { id, data } = await request.json();
-
-  const res = await updateData("users", id, data);
-  return NextResponse.json(
-    {
-      success: true,
-      message: res?.message,
-    },
-    { status: res?.statusCode }
   );
 }

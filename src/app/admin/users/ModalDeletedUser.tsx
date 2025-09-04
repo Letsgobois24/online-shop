@@ -3,6 +3,7 @@ import Icon from "@/components/Elements/Icon";
 import Modal from "@/components/Fragments/Modal";
 import userServices from "@/services/user";
 import { User } from "next-auth";
+import { useSession } from "next-auth/react";
 import { FormEvent, useState } from "react";
 
 export default function ModalDeletedUser({
@@ -15,16 +16,22 @@ export default function ModalDeletedUser({
   setUpdateData: any;
 }) {
   const [isLoading, setIsLoading] = useState(false);
+  const session = useSession();
+
   const handleDeleteUser = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
 
-    const res = await userServices.deleteUser(deletedUser.id || "");
+    const res = await userServices.deleteUser(
+      deletedUser.id || "",
+      session.data?.accessToken || ""
+    );
+
+    setIsLoading(false);
     if (res.status === 200) {
       setDeletedUser({});
       setUpdateData(true);
     }
-    setIsLoading(false);
   };
 
   return (
