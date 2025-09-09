@@ -18,7 +18,7 @@ const Sidebar = ({ lists }: { lists: ListsType }) => {
   const segments = pathname.split("/");
 
   return (
-    <aside className="bg-blue-900 w-65 text-white font-sans h-screen flex flex-col p-6">
+    <aside className="bg-blue-900 w-65 text-white font-sans h-screen flex-col p-6 hidden sm:flex">
       <h2 className="text-center font-semibold text-2xl pb-5">Admin Panel</h2>
       <div className="flex flex-col justify-between h-full">
         <ul className="flex flex-col space-y-2">
@@ -49,7 +49,8 @@ const Sidebar = ({ lists }: { lists: ListsType }) => {
           onClick={() => signOut()}
           type="button"
           variant="primary"
-          className="w-fit mx-auto font-semibold"
+          padding="medium"
+          className="mx-auto font-semibold"
         >
           Sign Out
         </Button>

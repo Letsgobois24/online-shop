@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Icon from "./Icon";
 type VariantType = keyof typeof colors;
 type SizeType = keyof typeof sizes;
+type PaddingType = keyof typeof paddings;
 
 type ButtonType = {
   children: ReactNode;
@@ -11,6 +12,7 @@ type ButtonType = {
   className?: string;
   isLoading?: boolean;
   size?: SizeType;
+  padding?: PaddingType;
 };
 
 const colors = {
@@ -21,6 +23,12 @@ const colors = {
 };
 
 const sizes = {
+  small: "w-20",
+  medium: "w-30",
+  large: "w-40",
+};
+
+const paddings = {
   small: "px-1.5 py-1.5",
   medium: "px-4 py-2.5",
 };
@@ -32,7 +40,8 @@ const Button = ({
   variant = "primary",
   className,
   isLoading = false,
-  size = "medium",
+  size,
+  padding,
 }: ButtonType) => {
   return (
     <button
@@ -40,9 +49,9 @@ const Button = ({
       onClick={onClick}
       className={`${
         isLoading ? "bg-slate-300" : colors[variant] + " cursor-pointer"
-      } ${className} ${
-        sizes[size]
-      } focus:ring-2 focus:outline-none font-medium rounded-lg flex items-center justify-center`}
+      } ${className} ${size && sizes[size]} ${
+        padding && paddings[padding]
+      } focus:ring-2 h-10 focus:outline-none font-medium rounded-lg flex items-center justify-center`}
     >
       {isLoading ? <Icon icon="loading" size={20} /> : children}
     </button>

@@ -3,7 +3,7 @@
 import Button from "@/components/Elements/Button";
 import Icon from "@/components/Elements/Icon";
 import Title from "@/components/Elements/Title";
-import userServices from "@/services/user";
+import userServices from "@/services/user/service";
 import { User } from "next-auth";
 import { useEffect, useState } from "react";
 import ModalUpdatedUser from "./ModalUpdatedUser";
@@ -60,14 +60,19 @@ export default function AdminUsersPage() {
                     <td className="py-1 px-2">{user.phone}</td>
                     <td className="py-1 px-2">{user.role}</td>
                     <td className="py-1 px-2 flex space-x-2">
-                      <Button onClick={() => setUpdatedUser(user)} size="small">
+                      <Button
+                        onClick={() => setUpdatedUser(user)}
+                        padding="small"
+                        className="h-fit"
+                      >
                         <Icon icon="edit" size={20} />
                       </Button>
                       <Button
                         type="button"
                         onClick={() => setDeletedUser(user)}
-                        size="small"
+                        padding="small"
                         variant="danger"
+                        className="h-fit"
                       >
                         <Icon icon="delete" size={20} />
                       </Button>

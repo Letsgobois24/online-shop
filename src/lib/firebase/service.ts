@@ -1,5 +1,5 @@
 import { User } from "next-auth";
-import { firestoreAdmin } from "./init";
+import { bucket, firestoreAdmin } from "./init";
 
 export async function getDataByEmail(email: string) {
   return await firestoreAdmin
@@ -12,9 +12,9 @@ export async function getDataByEmail(email: string) {
 export async function addData(collectionName: string, data: User) {
   data.created_at = new Date();
   data.updated_at = new Date();
-  await firestoreAdmin.collection(collectionName).add(data);
+  const result = await firestoreAdmin.collection(collectionName).add(data);
 
-  return data;
+  return { id: result.id, ...data };
 }
 
 export async function getAllData(collectionName: string) {
@@ -64,6 +64,19 @@ export async function updateData(
   }
 }
 
+export async function setData(
+  collectionName: string,
+  id: string,
+  data: object
+) {
+  try {
+    await firestoreAdmin.collection(collectionName).doc(id).set(data);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export async function deleteData(collectionName: string, id: string) {
   try {
     await firestoreAdmin.collection(collectionName).doc(id).delete();
@@ -71,4 +84,19 @@ export async function deleteData(collectionName: string, id: string) {
   } catch {
     return false;
   }
+}
+
+export async function uploadFile(id: string, file: File) {
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+
+  const fileName = `user/${id}/profile.${file.type.split("/")[1]}`;
+
+  const storageFile = bucket.file(fileName);
+  await storageFile.save(buffer, { contentType: file.type });
+  const [url] = await storageFile.getSignedUrl({
+    action: "read",
+    expires: "03-01-2026",
+  });
+  return url;
 }

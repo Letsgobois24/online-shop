@@ -10,6 +10,7 @@ declare module "next-auth" {
       email?: string | null;
       phone?: string | null;
       type?: "google";
+      image?: string | null;
     };
   }
 

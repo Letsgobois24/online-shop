@@ -5,7 +5,7 @@ import InputField from "@/components/Elements/Input/InputField";
 import { type User } from "next-auth";
 import Select from "@/components/Elements/Input/Select";
 import { FormEvent, useState } from "react";
-import userServices from "@/services/user";
+import userServices from "@/services/user/service";
 import { useSession } from "next-auth/react";
 
 export default function ModalUpdatedUser({
@@ -30,7 +30,6 @@ export default function ModalUpdatedUser({
     const data = {
       role: formData.get("role") as string,
     };
-    console.log(data);
     const res = await userServices.updateUser(
       updatedUser.id || "",
       data,
@@ -86,9 +85,9 @@ export default function ModalUpdatedUser({
             />
           </div>
         </div>
-        <Button type="submit" isLoading={isLoading}>
+        <Button type="submit" size="medium" isLoading={isLoading}>
           <Icon icon="edit" size={18} />
-          <span className="ml-1.5 font-semibold text-sm">Edit User</span>
+          <span className="font-semibold text-sm">Edit User</span>
         </Button>
       </form>
     </Modal>

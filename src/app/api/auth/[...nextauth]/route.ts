@@ -54,12 +54,15 @@ const authOptions: any = {
         token.fullname = user.fullname;
         token.phone = user.phone;
         token.role = user.role || "member";
+        token.id = user.id;
       }
 
       if (account?.provider === "google") {
+        console.log(user);
         const data = await signInWithGoogle({
           fullname: user.name,
           email: user.email,
+          image: user.image,
           type: "google",
         });
 
@@ -67,6 +70,8 @@ const authOptions: any = {
         token.fullname = data.fullname;
         token.role = data.role || "member";
         token.phone = data.phone;
+        token.id = data.id;
+        token.image = data.image;
       }
 
       return token;
@@ -85,7 +90,12 @@ const authOptions: any = {
       if ("role" in token) {
         session.user.role = token.role;
       }
-
+      if ("image" in token) {
+        session.user.image = token.image;
+      }
+      if ("id" in token) {
+        session.user.id = token.id || "";
+      }
       const accessToken = jwt.sign(token, process.env.NEXTAUTH_SECRET || "", {
         algorithm: "HS256",
       });

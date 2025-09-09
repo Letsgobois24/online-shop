@@ -1,7 +1,7 @@
 import Button from "@/components/Elements/Button";
 import Icon from "@/components/Elements/Icon";
 import Modal from "@/components/Fragments/Modal";
-import userServices from "@/services/user";
+import userServices from "@/services/user/service";
 import { User } from "next-auth";
 import { useSession } from "next-auth/react";
 import { FormEvent, useState } from "react";
@@ -51,10 +51,15 @@ export default function ModalDeletedUser({
               variant="danger"
               isLoading={isLoading}
               onClick={handleDeleteUser}
+              size="medium"
             >
               Yes, I&apos;m sure
             </Button>
-            <Button variant="white" onClick={() => setDeletedUser({})}>
+            <Button
+              variant="white"
+              size="medium"
+              onClick={() => setDeletedUser({})}
+            >
               No, cancel
             </Button>
           </div>

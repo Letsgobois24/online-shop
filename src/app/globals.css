@@ -13,6 +13,18 @@
   --font-lato: var(--font-lato);
 }
 
+@layer utilities {
+  /* Hilangkan up&down pada input type number */
+  .no-spinner::-webkit-outer-spin-button,
+  .no-spinner::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .no-spinner[type="number"] {
+    -moz-appearance: textfield;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;

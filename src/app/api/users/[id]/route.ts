@@ -21,6 +21,7 @@ export async function PUT(request: NextRequest, { params }: any) {
         {
           success: true,
           message: "Data telah berhasil diubah",
+          data,
         },
         { status: 200 }
       );

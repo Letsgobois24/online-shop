@@ -16,7 +16,7 @@ const listSidebarItem: ListsType = [
   {
     title: "Users",
     url: "/admin/users",
-    icon: "user",
+    icon: "users",
   },
 ];
 

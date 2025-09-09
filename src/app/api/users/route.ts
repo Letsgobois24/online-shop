@@ -1,4 +1,4 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { getAllData } from "@/lib/firebase/service";
 import { User } from "next-auth";
 
