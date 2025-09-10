@@ -20,7 +20,7 @@ export async function PUT(request: NextRequest, { params }: any) {
       return NextResponse.json(
         {
           success: true,
-          message: "Data telah berhasil diubah",
+          message: "Data has been changed",
           data,
         },
         { status: 200 }
@@ -29,7 +29,7 @@ export async function PUT(request: NextRequest, { params }: any) {
       return NextResponse.json(
         {
           success: false,
-          message: "Data gagal untuk diubah",
+          message: "Failed to change data",
         },
         { status: 400 }
       );

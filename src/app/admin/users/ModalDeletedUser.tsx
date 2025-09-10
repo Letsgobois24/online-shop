@@ -5,6 +5,7 @@ import userServices from "@/services/user/service";
 import { User } from "next-auth";
 import { useSession } from "next-auth/react";
 import { FormEvent, useState } from "react";
+import { useToaster } from "@/context/ToasterContext";
 
 export default function ModalDeletedUser({
   setDeletedUser,
@@ -17,6 +18,7 @@ export default function ModalDeletedUser({
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const session = useSession();
+  const { showToaster } = useToaster();
 
   const handleDeleteUser = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,11 +29,12 @@ export default function ModalDeletedUser({
       session.data?.accessToken || ""
     );
 
-    setIsLoading(false);
     if (res.status === 200) {
       setDeletedUser({});
       setUpdateData(true);
     }
+    setIsLoading(false);
+    showToaster(res.data.success ? "success" : "danger", res.data.message);
   };
 
   return (

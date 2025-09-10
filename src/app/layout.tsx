@@ -6,6 +6,8 @@ import { Geist, Geist_Mono, Lato } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { ToasterProvider } from "@/context/ToasterContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,14 +38,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
+
   return (
     <html lang="en">
       <body
         className={`${lato.className} ${lato.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <SessionProvider>
-          {!disableNavbar.includes(pathname.split("/")[1]) && <Navbar />}
-          {children}
+          <ToasterProvider>
+            {!disableNavbar.includes(pathname.split("/")[1]) && <Navbar />}
+            {children}
+          </ToasterProvider>
         </SessionProvider>
       </body>
     </html>

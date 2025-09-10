@@ -7,6 +7,7 @@ import userServices from "@/services/user/service";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { FormEvent, useEffect, useState } from "react";
+import { useToaster } from "@/context/ToasterContext";
 
 type ImageInfo = {
   name?: string | undefined;
@@ -17,6 +18,7 @@ export default function ProfilePage() {
   const [changeImage, setChangeImage] = useState<ImageInfo>({});
   const [isLoading, setIsLoading] = useState(false);
   const session = useSession();
+  const { showToaster } = useToaster();
 
   const handleChangeProfileImg = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.currentTarget.files?.[0];
@@ -31,12 +33,13 @@ export default function ProfilePage() {
     const file: any = formData.get("upload-image") as File;
 
     if (!file || !(file.size > 0)) {
-      console.log("File has not uploaded");
       setIsLoading(false);
+      showToaster("warning", "File has not uploaded");
       return;
     }
     if (file.size > 1048576) {
       setIsLoading(false);
+      showToaster("warning", "File bigger than 1 MB");
       return;
     }
     const res = await userServices.uploadProfile(
@@ -48,7 +51,9 @@ export default function ProfilePage() {
       setProfile({ ...profile, image });
       setChangeImage({});
       await session.update({ image });
+      console.log({ profile });
     }
+    showToaster(res.data.success ? "success" : "danger", res.data.message);
     setIsLoading(false);
   };
 
@@ -66,12 +71,14 @@ export default function ProfilePage() {
       data,
       session.data?.accessToken || ""
     );
-    console.log({ res });
-    setProfile({
-      ...profile,
-      ...res.data.data,
-    });
+    if (res.status == 200) {
+      setProfile({
+        ...profile,
+        ...res.data.data,
+      });
+    }
     setIsLoading(false);
+    showToaster(res.data.success ? "success" : "danger", res.data.message);
   };
 
   const handlaChangePassword = async (e: FormEvent<HTMLFormElement>) => {
@@ -89,7 +96,6 @@ export default function ProfilePage() {
       data,
       session.data?.accessToken || ""
     );
-    console.log({ res });
     if (res.status == 200) {
       setProfile({
         ...profile,
@@ -121,9 +127,9 @@ export default function ProfilePage() {
           </Title>
           <form
             onSubmit={handleUploadProfile}
-            className="flex flex-col space-y-5"
+            className="flex flex-col space-y-5 w-full"
           >
-            <div className="border border-slate-300 shadow-md w-50 h-50 rounded-full overflow-hidden">
+            <div className="mx-auto border border-slate-300 shadow-md w-50 h-50 rounded-full overflow-hidden">
               <Image
                 priority
                 className="w-full h-full"
@@ -133,13 +139,13 @@ export default function ProfilePage() {
                 height={100}
               />
             </div>
-            <div className="mb-3 border border-slate-500 bg-slate-200 hover:bg-slate-300 rounded-lg shadow-md p-2 flex flex-col">
+            <div className="border border-slate-500 bg-slate-200 hover:bg-slate-300 rounded-lg shadow-md flex flex-col">
               <label
                 htmlFor="upload-image"
-                className="text-sm text-center cursor-pointer"
+                className="text-sm text-center cursor-pointer min-h-24 flex flex-col justify-center"
               >
                 {!(Object.keys(changeImage).length > 0) ? (
-                  <>
+                  <div className="p-2">
                     <p className="text-gray-600">
                       Maximum upload size is <b>1 MB</b>
                     </p>
@@ -147,9 +153,9 @@ export default function ProfilePage() {
                       Upload a new avatar, larger image will be resized
                       automatically
                     </p>
-                  </>
+                  </div>
                 ) : (
-                  <p className="text-gray-600">{changeImage.name}</p>
+                  <p className="text-gray-600 p-2">{changeImage.name}</p>
                 )}
 
                 <input

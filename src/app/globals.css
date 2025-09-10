@@ -13,6 +13,18 @@
   --font-lato: var(--font-lato);
 }
 
+@theme {
+  --animate-shrink: shrink 3s linear forwards;
+  @keyframes shrink {
+    0% {
+      width: 100%;
+    }
+    100% {
+      width: 0%;
+    }
+  }
+}
+
 @layer utilities {
   /* Hilangkan up&down pada input type number */
   .no-spinner::-webkit-outer-spin-button,

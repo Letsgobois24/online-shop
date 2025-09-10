@@ -7,6 +7,7 @@ import Select from "@/components/Elements/Input/Select";
 import { FormEvent, useState } from "react";
 import userServices from "@/services/user/service";
 import { useSession } from "next-auth/react";
+import { useToaster } from "@/context/ToasterContext";
 
 export default function ModalUpdatedUser({
   setUpdatedUser,
@@ -19,6 +20,7 @@ export default function ModalUpdatedUser({
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const session = useSession();
+  const { showToaster } = useToaster();
 
   const handleUpdateUser = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -40,6 +42,7 @@ export default function ModalUpdatedUser({
       setUpdateData(true);
     }
     setIsLoading(false);
+    showToaster(res.data.success ? "success" : "danger", res.data.message);
   };
 
   return (

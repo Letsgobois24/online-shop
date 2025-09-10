@@ -53,7 +53,7 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json(
         {
           success: true,
-          message: "Data telah berhasil diubah",
+          message: "Profile has been changed",
         },
         { status: 200 }
       );
@@ -61,7 +61,7 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          message: "Data gagal untuk diubah",
+          message: "Failed to change profile",
         },
         { status: 400 }
       );
