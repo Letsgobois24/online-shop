@@ -8,14 +8,12 @@ import { User } from "next-auth";
 import { useEffect, useState } from "react";
 import ModalUpdatedUser from "./ModalUpdatedUser";
 import ModalDeletedUser from "./ModalDeletedUser";
-import { useToaster } from "@/context/ToasterContext";
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState([]);
   const [updatedUser, setUpdatedUser]: any = useState({});
   const [deletedUser, setDeletedUser]: any = useState({});
   const [updateData, setUpdateData] = useState(false);
-  const { showToaster } = useToaster();
 
   const getAllData = async () => {
     const res = await userServices.getAllUsers();

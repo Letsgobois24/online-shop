@@ -6,7 +6,6 @@ import { Geist, Geist_Mono, Lato } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 import { ToasterProvider } from "@/context/ToasterContext";
 
 const geistSans = Geist({
