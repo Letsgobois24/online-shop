@@ -6,31 +6,32 @@ import Title from "@/components/Elements/Title";
 import userServices from "@/services/user/service";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { FormEvent, useEffect, useState } from "react";
+import { type FormEvent, useEffect, useState, type ChangeEvent } from "react";
 import { useToaster } from "@/context/ToasterContext";
+import { User } from "next-auth";
+import { ChangePasswordType } from "@/services/user/service.type";
 
-type ImageInfo = {
-  name?: string | undefined;
-};
+type ImageInfo = string | null;
+
 
 export default function ProfilePage() {
-  const [profile, setProfile]: any = useState({});
-  const [changeImage, setChangeImage] = useState<ImageInfo>({});
+  const [profile, setProfile] = useState<User | null>(null);
+  const [changeImage, setChangeImage] = useState<ImageInfo>(null);
   const [isLoading, setIsLoading] = useState(false);
   const session = useSession();
   const { showToaster } = useToaster();
 
-  const handleChangeProfileImg = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeProfileImg = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.currentTarget.files?.[0];
     if (!file) return;
-    setChangeImage({ name: file?.name });
+    setChangeImage(file?.name);
   };
 
   const handleUploadProfile = async (e: FormEvent<HTMLFormElement>) => {
     setIsLoading(true);
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const file: any = formData.get("upload-image") as File;
+    const file = formData.get("upload-image") as File;
 
     if (!file || !(file.size > 0)) {
       setIsLoading(false);
@@ -49,9 +50,9 @@ export default function ProfilePage() {
     if (res.status === 200) {
       const image = res.data.image;
       setProfile({ ...profile, image });
-      setChangeImage({});
+      setChangeImage(null);
       await session.update({ image });
-      console.log({ profile });
+      // console.log({ profile });
     }
     showToaster(res.data.success ? "success" : "danger", res.data.message);
     setIsLoading(false);
@@ -63,8 +64,8 @@ export default function ProfilePage() {
 
     const form = e.target as HTMLFormElement;
     const data = {
-      fullname: form.fullname.value,
-      phone: form.phone.value,
+      fullname: form.fullname.value as string,
+      phone: form.phone.value as string,
     };
 
     const res = await userServices.updateProfile(
@@ -77,8 +78,8 @@ export default function ProfilePage() {
         ...res.data.data,
       });
     }
-    setIsLoading(false);
     showToaster(res.data.success ? "success" : "danger", res.data.message);
+    setIsLoading(false);
   };
 
   const handlaChangePassword = async (e: FormEvent<HTMLFormElement>) => {
@@ -86,25 +87,31 @@ export default function ProfilePage() {
     setIsLoading(true);
 
     const form = e.target as HTMLFormElement;
-    const data = {
-      oldPassword: form["old-password"].value,
-      newPassword: form["new-password"].value,
-      encryptedPassword: profile.password,
+    const data: ChangePasswordType = {
+      newPassword: (form["new-password"].value as string) || "",
     };
+
+    if (profile?.password) {
+      (data.encryptedPassword = profile?.password || ""),
+        (data.oldPassword = (form["old-password"].value as string) || "");
+    }
 
     const res = await userServices.changePassword(
       data,
       session.data?.accessToken || ""
     );
+    const newPassword = res.data.password;
     if (res.status == 200) {
       setProfile({
         ...profile,
-        password: res.data.password,
+        password: newPassword,
       });
+      await session.update({ password: newPassword });
     }
+    form.reset();
+    showToaster(res.data.success ? "success" : "danger", res.data.message);
     setIsLoading(false);
   };
-
   useEffect(() => {
     if (session.status == "authenticated") {
       const getProfile = async () => {
@@ -133,7 +140,7 @@ export default function ProfilePage() {
               <Image
                 priority
                 className="w-full h-full"
-                src={profile.image || "/logo/person-logo.png"}
+                src={profile?.image || "/logo/person-logo.png"}
                 alt="Profile Image"
                 width={100}
                 height={100}
@@ -144,7 +151,7 @@ export default function ProfilePage() {
                 htmlFor="upload-image"
                 className="text-sm text-center cursor-pointer min-h-24 flex flex-col justify-center"
               >
-                {!(Object.keys(changeImage).length > 0) ? (
+                {!changeImage ? (
                   <div className="p-2">
                     <p className="text-gray-600">
                       Maximum upload size is <b>1 MB</b>
@@ -155,7 +162,7 @@ export default function ProfilePage() {
                     </p>
                   </div>
                 ) : (
-                  <p className="text-gray-600 p-2">{changeImage.name}</p>
+                  <p className="text-gray-600 p-2">{changeImage}</p>
                 )}
 
                 <input
@@ -185,17 +192,16 @@ export default function ProfilePage() {
             <InputField
               label="Fullname"
               name="fullname"
-              placeholder="Your fullname"
               type="text"
               required={true}
-              defaultValue={profile.fullname}
+              defaultValue={profile?.fullname || ""}
             />
             <InputField
               label="Phone Number"
               name="phone"
               type="number"
               placeholder="Your phone number"
-              defaultValue={profile.phone}
+              defaultValue={profile?.phone || ""}
               className="no-spinner"
             />
             <InputField
@@ -204,13 +210,13 @@ export default function ProfilePage() {
               placeholder="name@company.com"
               type="email"
               required={true}
-              defaultValue={profile.email}
+              defaultValue={profile?.email || ""}
               disabled
             />
             <InputField
               label="Role"
               name="role"
-              defaultValue={profile.role}
+              defaultValue={profile?.role || ""}
               disabled
             />
             <Button
@@ -227,17 +233,20 @@ export default function ProfilePage() {
             Change Password
           </Title>
           <form className="space-y-5" onSubmit={(e) => handlaChangePassword(e)}>
-            <InputField
-              label="Old Password"
-              name="old-password"
-              placeholder="••••••••"
-              type="password"
-              required
-            />
+            {profile?.password && (
+              <InputField
+                label="Old Password"
+                name="old-password"
+                placeholder="Your last password"
+                type="password"
+                required
+              />
+            )}
+
             <InputField
               label="New Password"
               name="new-password"
-              placeholder="••••••••"
+              placeholder="Your new password"
               type="password"
               required
             />

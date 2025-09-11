@@ -2,9 +2,14 @@ import Button from "@/components/Elements/Button";
 import Icon from "@/components/Elements/Icon";
 import Modal from "@/components/Fragments/Modal";
 import InputField from "@/components/Elements/Input/InputField";
-import { type User } from "next-auth";
+import { RoleType, type User } from "next-auth";
 import Select from "@/components/Elements/Input/Select";
-import { FormEvent, useState } from "react";
+import {
+  type Dispatch,
+  type FormEvent,
+  type SetStateAction,
+  useState,
+} from "react";
 import userServices from "@/services/user/service";
 import { useSession } from "next-auth/react";
 import { useToaster } from "@/context/ToasterContext";
@@ -14,9 +19,9 @@ export default function ModalUpdatedUser({
   updatedUser,
   setUpdateData,
 }: {
-  setUpdatedUser: any;
+  setUpdatedUser: Dispatch<SetStateAction<User>>;
   updatedUser: User;
-  setUpdateData: any;
+  setUpdateData: Dispatch<SetStateAction<boolean>>;
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const session = useSession();
@@ -30,7 +35,7 @@ export default function ModalUpdatedUser({
     const formData = new FormData(form);
 
     const data = {
-      role: formData.get("role") as string,
+      role: formData.get("role") as RoleType,
     };
     const res = await userServices.updateUser(
       updatedUser.id || "",

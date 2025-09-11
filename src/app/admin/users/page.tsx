@@ -10,9 +10,9 @@ import ModalUpdatedUser from "./ModalUpdatedUser";
 import ModalDeletedUser from "./ModalDeletedUser";
 
 export default function AdminUsersPage() {
-  const [users, setUsers] = useState([]);
-  const [updatedUser, setUpdatedUser]: any = useState({});
-  const [deletedUser, setDeletedUser]: any = useState({});
+  const [users, setUsers] = useState<User[]>([]);
+  const [updatedUser, setUpdatedUser] = useState<User>({});
+  const [deletedUser, setDeletedUser] = useState<User>({});
   const [updateData, setUpdateData] = useState(false);
 
   const getAllData = async () => {
@@ -49,7 +49,7 @@ export default function AdminUsersPage() {
                 </tr>
               </thead>
               <tbody>
-                {users.map((user: User, index) => (
+                {users.map((user, index) => (
                   <tr
                     key={user.id}
                     className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200"

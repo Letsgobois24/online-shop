@@ -47,7 +47,7 @@ export async function getDataById(collectionName: string, id: string) {
 export async function updateData(
   collectionName: string,
   id: string,
-  data: any
+  data: object
 ) {
   const snapshot = await firestoreAdmin
     .collection(collectionName)

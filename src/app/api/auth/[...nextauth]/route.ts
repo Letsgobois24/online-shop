@@ -72,6 +72,7 @@ const authOptions: any = {
         token.phone = data.phone;
         token.id = data.id;
         token.image = data.image;
+        // token.type = data.type;
       }
 
       return token;
@@ -96,6 +97,9 @@ const authOptions: any = {
       if ("id" in token) {
         session.user.id = token.id || "";
       }
+      // if ("type" in token) {
+      //   session.user.type = token.type;
+      // }
       const accessToken = jwt.sign(token, process.env.NEXTAUTH_SECRET || "", {
         algorithm: "HS256",
       });

@@ -23,14 +23,17 @@ export default function SignUpPages() {
       phone: form.phone.value,
       password: form.password.value,
     };
+    try {
+      const res = await authServices.registerAccount(data);
 
-    const res = await authServices.registerAccount(data);
-
-    if (res.success) {
-      form.reset();
-      push("/signin");
-    } else {
-      setError(`Error ${res.status}: ${res.message}`);
+      if (res.success) {
+        form.reset();
+        push("/signin");
+      } else {
+        setError(`Error ${res.status}: ${res.message}`);
+      }
+    } catch {
+      setError("Register failed! Please try again later");
     }
     setIsLoading(false);
   };

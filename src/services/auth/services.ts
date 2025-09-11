@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import { User } from "next-auth";
 
 export async function signUp(data: User) {
-  const snapshot = await getDataByEmail(data.email ?? "");
+  const snapshot = await getDataByEmail(data.email || "");
 
   if (!snapshot.empty) {
     return { success: false, statusCode: 400, message: "Email already exists" };
@@ -39,7 +39,7 @@ export async function signIn(email: string): Promise<User | null> {
 }
 
 export async function signInWithGoogle(data: User) {
-  const snapshot = await getDataByEmail(data.email ?? "");
+  const snapshot = await getDataByEmail(data.email || "");
 
   if (!snapshot.empty) {
     const userData = snapshot.docs[0];

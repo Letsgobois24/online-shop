@@ -9,22 +9,22 @@ export async function PUT(request: NextRequest) {
   const token = request.headers.get("Authorization")?.split(" ")[1] || "";
 
   try {
-    console.log(0);
     const decoded: any = jwt.verify(token, process.env.NEXTAUTH_SECRET || "");
-    const confirmPassword = await compare(
-      data.oldPassword,
-      data.encryptedPassword
-    );
-
-    if (!confirmPassword) {
-      console.log("different password");
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Failed",
-        },
-        { status: 400 }
+    if (data.encryptedPassword) {
+      const confirmPassword = await compare(
+        data.oldPassword,
+        data.encryptedPassword
       );
+
+      if (!confirmPassword) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "Failed",
+          },
+          { status: 401 }
+        );
+      }
     }
 
     const password = await hash(data.newPassword, 10);

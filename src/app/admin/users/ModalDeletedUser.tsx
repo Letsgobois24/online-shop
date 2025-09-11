@@ -4,7 +4,12 @@ import Modal from "@/components/Fragments/Modal";
 import userServices from "@/services/user/service";
 import { User } from "next-auth";
 import { useSession } from "next-auth/react";
-import { FormEvent, useState } from "react";
+import {
+  type Dispatch,
+  type FormEvent,
+  type SetStateAction,
+  useState,
+} from "react";
 import { useToaster } from "@/context/ToasterContext";
 
 export default function ModalDeletedUser({
@@ -12,9 +17,9 @@ export default function ModalDeletedUser({
   deletedUser,
   setUpdateData,
 }: {
-  setDeletedUser: any;
+  setDeletedUser: Dispatch<SetStateAction<User>>;
   deletedUser: User;
-  setUpdateData: any;
+  setUpdateData: Dispatch<SetStateAction<boolean>>;
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const session = useSession();

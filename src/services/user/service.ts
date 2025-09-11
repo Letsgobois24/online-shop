@@ -1,8 +1,13 @@
 import instance from "@/lib/axios/instance";
+import type {
+  ChangePasswordType,
+  ChangeProfileType,
+  UserUpdateType,
+} from "./service.type";
 
 export const userServices = {
   getAllUsers: () => instance.get("/api/users"),
-  updateUser: (id: string, data: any, token: string) =>
+  updateUser: (id: string, data: UserUpdateType, token: string) =>
     instance.put(`/api/users/${id}`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -28,13 +33,13 @@ export const userServices = {
         "Content-Type": "multipart/form-data",
       },
     }),
-  updateProfile: (data: any, token: string) =>
+  updateProfile: (data: ChangeProfileType, token: string) =>
     instance.put(`/api/user/profile`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     }),
-  changePassword: (data: any, token: string) =>
+  changePassword: (data: ChangePasswordType, token: string) =>
     instance.put(`/api/user/change-password`, data, {
       headers: {
         Authorization: `Bearer ${token}`,

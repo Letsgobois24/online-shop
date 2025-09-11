@@ -1,6 +1,8 @@
 import NextAuth from "next-auth";
 
 declare module "next-auth" {
+  type RoleType = "member" | "admin";
+
   interface Session {
     accessToken?: string;
     user: {

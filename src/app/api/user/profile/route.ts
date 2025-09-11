@@ -48,16 +48,10 @@ export async function PUT(request: NextRequest) {
 
   try {
     const decoded: any = jwt.verify(token, process.env.NEXTAUTH_SECRET || "");
+    console.log(decoded);
+
     const res = await updateData("users", decoded.id, data);
-    if (res) {
-      return NextResponse.json(
-        {
-          success: true,
-          message: "Profile has been changed",
-        },
-        { status: 200 }
-      );
-    } else {
+    if (!res) {
       return NextResponse.json(
         {
           success: false,
@@ -66,6 +60,13 @@ export async function PUT(request: NextRequest) {
         { status: 400 }
       );
     }
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Profile has been changed",
+      },
+      { status: 200 }
+    );
   } catch {
     return NextResponse.json(
       {

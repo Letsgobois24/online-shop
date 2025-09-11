@@ -21,7 +21,7 @@ const Navbar = () => {
                   alt="Profile Image"
                   width={35}
                   height={35}
-                  className="rounded-full"
+                  className="rounded-full w-10 h-10"
                 />
                 <p className="text-white text-sm">{session?.user?.fullname}</p>
               </Link>
