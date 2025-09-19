@@ -38,7 +38,9 @@ export async function signIn(email: string): Promise<User | null> {
   return null;
 }
 
-export async function signInWithGoogle(data: User) {
+export async function signInWithGoogle(
+  data: User
+): Promise<{ id: string } & User> {
   const snapshot = await getDataByEmail(data.email || "");
 
   if (!snapshot.empty) {

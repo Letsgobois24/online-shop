@@ -7,8 +7,11 @@ const Navbar = () => {
   const { data: session, status } = useSession();
 
   return (
-    <nav className="bg-blue-900">
-      <ul className="h-17 flex justify-end items-center space-x-4 px-4">
+    <nav className="bg-blue-900 flex justify-between items-center pl-8 pr-4">
+      <div className="text-white font-bold tracking-wider text-2xl">
+        LetsgoboisShop
+      </div>
+      <ul className="h-17 flex justify-end items-center space-x-4">
         {status === "authenticated" ? (
           <>
             <li>

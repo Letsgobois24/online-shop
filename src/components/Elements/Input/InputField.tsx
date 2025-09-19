@@ -1,17 +1,18 @@
 "use client";
 
-import React from "react";
+import React, { ChangeEvent } from "react";
 import Label from "./Label";
 
 interface InputFieldProps {
   label: string;
-  type?: string;
+  type?: "text" | "number" | "password" | "email";
   name: string;
   placeholder?: string;
   required?: boolean;
-  defaultValue?: string;
+  defaultValue?: string | number;
   className?: string;
   disabled?: boolean;
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -23,6 +24,7 @@ const InputField: React.FC<InputFieldProps> = ({
   defaultValue = "",
   className = "",
   disabled = false,
+  onChange,
 }) => {
   return (
     <>
@@ -36,6 +38,7 @@ const InputField: React.FC<InputFieldProps> = ({
         required={required}
         defaultValue={defaultValue}
         disabled={disabled}
+        onChange={onChange}
       />
     </>
   );

@@ -24,7 +24,8 @@ export async function PUT(request: NextRequest) {
     }
     const id = decoded.id;
     try {
-      const url = await uploadFile(id, file);
+      const fileName = "profile." + file.type.split("/")[1];
+      const url = await uploadFile("users", id, file, fileName);
       await updateData("users", id, { image: url });
       return NextResponse.json(
         {

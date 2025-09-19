@@ -6,13 +6,13 @@ import Title from "@/components/Elements/Title";
 import userServices from "@/services/user/service";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { type FormEvent, useEffect, useState, type ChangeEvent } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 import { useToaster } from "@/context/ToasterContext";
 import { User } from "next-auth";
 import { ChangePasswordType } from "@/services/user/service.type";
+import InputFile from "@/components/Elements/Input/InputFile";
 
-type ImageInfo = string | null;
-
+type ImageInfo = File | null;
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<User | null>(null);
@@ -20,12 +20,6 @@ export default function ProfilePage() {
   const [isLoading, setIsLoading] = useState(false);
   const session = useSession();
   const { showToaster } = useToaster();
-
-  const handleChangeProfileImg = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.currentTarget.files?.[0];
-    if (!file) return;
-    setChangeImage(file?.name);
-  };
 
   const handleUploadProfile = async (e: FormEvent<HTMLFormElement>) => {
     setIsLoading(true);
@@ -52,7 +46,6 @@ export default function ProfilePage() {
       setProfile({ ...profile, image });
       setChangeImage(null);
       await session.update({ image });
-      // console.log({ profile });
     }
     showToaster(res.data.success ? "success" : "danger", res.data.message);
     setIsLoading(false);
@@ -92,8 +85,8 @@ export default function ProfilePage() {
     };
 
     if (profile?.password) {
-      (data.encryptedPassword = profile?.password || ""),
-        (data.oldPassword = (form["old-password"].value as string) || "");
+      data.encryptedPassword = profile?.password || "";
+      data.oldPassword = (form["old-password"].value as string) || "";
     }
 
     const res = await userServices.changePassword(
@@ -146,34 +139,13 @@ export default function ProfilePage() {
                 height={100}
               />
             </div>
-            <div className="border border-slate-500 bg-slate-200 hover:bg-slate-300 rounded-lg shadow-md flex flex-col">
-              <label
-                htmlFor="upload-image"
-                className="text-sm text-center cursor-pointer min-h-24 flex flex-col justify-center"
-              >
-                {!changeImage ? (
-                  <div className="p-2">
-                    <p className="text-gray-600">
-                      Maximum upload size is <b>1 MB</b>
-                    </p>
-                    <p className="">
-                      Upload a new avatar, larger image will be resized
-                      automatically
-                    </p>
-                  </div>
-                ) : (
-                  <p className="text-gray-600 p-2">{changeImage}</p>
-                )}
 
-                <input
-                  className="hidden w-full text-xs text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50"
-                  name="upload-image"
-                  id="upload-image"
-                  type="file"
-                  onChange={(e) => handleChangeProfileImg(e)}
-                ></input>
-              </label>
-            </div>
+            <InputFile
+              name="upload-image"
+              changeFile={changeImage}
+              setChangeFile={setChangeImage}
+            />
+
             <Button
               type="submit"
               isLoading={session.status == "loading" || isLoading}

@@ -9,7 +9,10 @@ export async function getDataByEmail(email: string) {
     .get();
 }
 
-export async function addData(collectionName: string, data: User) {
+export async function addData(
+  collectionName: string,
+  data: Record<string, unknown> | User
+) {
   data.created_at = new Date();
   data.updated_at = new Date();
   const result = await firestoreAdmin.collection(collectionName).add(data);
@@ -28,7 +31,10 @@ export async function getAllData(collectionName: string) {
   return data;
 }
 
-export async function getDataById(collectionName: string, id: string) {
+export async function getDataById(
+  collectionName: string,
+  id: string
+): Promise<any> {
   const snapshot = await firestoreAdmin
     .collection(collectionName)
     .doc(id)
@@ -47,7 +53,7 @@ export async function getDataById(collectionName: string, id: string) {
 export async function updateData(
   collectionName: string,
   id: string,
-  data: object
+  data: Record<string, unknown>
 ) {
   const snapshot = await firestoreAdmin
     .collection(collectionName)
@@ -55,6 +61,7 @@ export async function updateData(
     .get();
 
   if (snapshot.exists) {
+    data.updated_at = new Date();
     try {
       await snapshot.ref.update(data);
       return true;
@@ -62,6 +69,8 @@ export async function updateData(
       return false;
     }
   }
+
+  return false;
 }
 
 export async function setData(
@@ -86,17 +95,31 @@ export async function deleteData(collectionName: string, id: string) {
   }
 }
 
-export async function uploadFile(id: string, file: File) {
+export async function uploadFile(
+  folder: string,
+  id: string,
+  file: File,
+  fileName: string
+) {
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
 
-  const fileName = `user/${id}/profile.${file.type.split("/")[1]}`;
-
-  const storageFile = bucket.file(fileName);
+  const pathName = `${folder}/${id}/${fileName}`;
+  const storageFile = bucket.file(pathName);
   await storageFile.save(buffer, { contentType: file.type });
   const [url] = await storageFile.getSignedUrl({
     action: "read",
     expires: "03-01-2026",
   });
   return url;
+}
+
+export async function deleteFile(pathName: string) {
+  try {
+    await bucket.file(pathName).delete();
+    return true;
+  } catch (err) {
+    console.log({ err });
+    return false;
+  }
 }

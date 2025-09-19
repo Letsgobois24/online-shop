@@ -10,7 +10,7 @@ type SelectTypeProps = {
   type?: string;
   name: string;
   required?: boolean;
-  defaultValue?: string;
+  defaultValue?: string | number;
   className?: string;
   disabled?: boolean;
   options: Options[];

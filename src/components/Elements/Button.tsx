@@ -18,6 +18,7 @@ type ButtonType = {
 const colors = {
   primary: "text-white bg-blue-600 hover:bg-blue-700 focus:ring-blue-300",
   danger: "text-white bg-red-600 hover:bg-red-700 focus:ring-red-300",
+  warning: "text-white bg-yellow-500 hover:bg-yellow-600 focus:ring-yellow-300",
   white:
     "text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:ring-gray-100",
 };
@@ -45,6 +46,7 @@ const Button = ({
 }: ButtonType) => {
   return (
     <button
+      disabled={isLoading}
       type={type}
       onClick={onClick}
       className={`${

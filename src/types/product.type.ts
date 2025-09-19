@@ -1,4 +1,4 @@
-type StockType = {
+export type StockType = {
   size: number;
   qty: number;
 };
@@ -11,6 +11,7 @@ export type ProductType = {
   price: number;
   status: boolean;
   stock: StockType[];
+  fileName: string;
   created_at: Date;
   updated_at: Date;
 };
