@@ -127,7 +127,7 @@ export default function ModalUpdateProduct({
               src={
                 changeImage
                   ? URL.createObjectURL(changeImage)
-                  : updatedProduct?.image || "image/empty-image.png"
+                  : updatedProduct?.image || "/image/empty-image.png"
               }
             />
             <InputFile

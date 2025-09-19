@@ -16,6 +16,7 @@ import type { StockType } from "@/types/product.type";
 import InputFile from "@/components/Elements/Input/InputFile";
 import Label from "@/components/Elements/Input/Label";
 import productsServices from "@/services/products/services";
+import Image from "next/image";
 
 type PropTypes = {
   setModalAddProduct: Dispatch<SetStateAction<boolean>>;
@@ -61,7 +62,7 @@ export default function ModalAddProduct({
   };
 
   return (
-    <Modal title="Edit User" onClose={() => setModalAddProduct(false)}>
+    <Modal title="Add Product" onClose={() => setModalAddProduct(false)}>
       <form className="p-4 md:p-5" onSubmit={handleSubmit}>
         <div className="grid gap-4 mb-4 grid-cols-2">
           <div className="col-span-2">
@@ -104,6 +105,26 @@ export default function ModalAddProduct({
               ]}
             />
           </div>
+          <div className="col-span-2">
+            <Label name="product-image" label="Image" />
+            <Image
+              priority
+              width={220}
+              height={220}
+              alt="Product Image"
+              className="mb-3 mx-auto border-gray-300 border-2"
+              src={
+                changeImage
+                  ? URL.createObjectURL(changeImage)
+                  : "/image/empty-image.png"
+              }
+            />
+            <InputFile
+              name="product-image"
+              changeFile={changeImage}
+              setChangeFile={setChangeImage}
+            />
+          </div>
           <label className="col-span-2 font-semibold" htmlFor="stock">
             Stock
           </label>
@@ -142,14 +163,6 @@ export default function ModalAddProduct({
             <span className="mr-1.5 text-2xl">+</span>
             <span className="font-semibold text-sm">Add Stock</span>
           </Button>
-          <div className="col-span-2">
-            <Label name="product-image" label="Image" />
-            <InputFile
-              name="product-image"
-              changeFile={changeImage}
-              setChangeFile={setChangeImage}
-            />
-          </div>
         </div>
         <Button type="submit" className="w-full" isLoading={isLoading}>
           <span className="mr-1.5 text-2xl">+</span>
