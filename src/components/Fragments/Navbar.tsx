@@ -11,7 +11,7 @@ const Navbar = () => {
       <div className="text-white font-bold tracking-wider text-2xl">
         LetsgoboisShop
       </div>
-      <ul className="h-17 flex justify-end items-center space-x-4">
+      <ul className="h-[12vh] flex justify-end items-center space-x-4">
         {status === "authenticated" ? (
           <>
             <li>

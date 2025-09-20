@@ -8,6 +8,29 @@ import {
 } from "@/lib/firebase/service";
 import jwt from "jsonwebtoken";
 
+type PropsType = { params: Promise<{ id: string }> };
+
+export async function GET(request: NextRequest, { params }: PropsType) {
+  const { id } = await params;
+  try {
+    const product = await getDataById("products", id);
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Success to get product",
+        data: product,
+      },
+      { status: 200 }
+    );
+  } catch {
+    return NextResponse.json({
+      success: true,
+      message: "Failed to get product",
+    });
+  }
+}
+
 export async function PUT(request: NextRequest, { params }: any) {
   const { id } = await params;
   const token = request.headers.get("Authorization")?.split(" ")[1] || "";
@@ -32,8 +55,10 @@ export async function PUT(request: NextRequest, { params }: any) {
     const file = formData.get("product-image") as File;
     formData.delete("product-image");
 
-    let url, res;
+    let url,
+      res = true;
     const data: any = Object.fromEntries(formData.entries());
+    console.log({ file });
     if (file) {
       const { fileName } = await getDataById("products", id);
       res = await deleteFile(`products/${id}/${fileName}`);

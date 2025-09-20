@@ -44,10 +44,7 @@ export async function getDataById(
     return null;
   }
 
-  return {
-    id: snapshot.id,
-    ...snapshot.data(),
-  };
+  return snapshot.data();
 }
 
 export async function updateData(
