@@ -30,15 +30,6 @@ export default function DetailProduct({ params }: { params: any }) {
   const [isLoading, setIsLoading] = useState(false);
   const [cart, setCart] = useState<CartType | []>([]);
 
-  const getProductData = async () => {
-    const res = await productsServices.getProduct(id);
-    setProduct(res.data.data);
-  };
-
-  const getCart = async () => {
-    const res = await userServices.getCart(session?.accessToken || "");
-    setCart(res.data.data);
-  };
   const handleAddToCart = async () => {
     if (selectedSize) {
       setIsLoading(true);
@@ -74,11 +65,19 @@ export default function DetailProduct({ params }: { params: any }) {
   };
 
   useEffect(() => {
+    const getProductData = async () => {
+      const res = await productsServices.getProduct(id);
+      setProduct(res.data.data);
+    };
     getProductData();
   }, []);
 
   useEffect(() => {
     if (status == "authenticated") {
+      const getCart = async () => {
+        const res = await userServices.getCart(session?.accessToken || "");
+        setCart(res.data.data);
+      };
       getCart();
     }
   }, [status]);
