@@ -21,8 +21,10 @@ export default function Card({ product }: { product: ProductType }) {
           <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">
             {product.name}
           </h5>
-          <p className="mb-2 font-normal text-gray-700">{product.category}</p>
-          <p className="mb-2 font-semibold text-gray-900">
+          <p className="mb-2 font-normal text-gray-700 font-sans">
+            {product.category}
+          </p>
+          <p className="mb-2 font-semibold text-gray-900 font-sans">
             {convertToIDR(product.price)}
           </p>
         </div>

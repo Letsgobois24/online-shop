@@ -11,12 +11,7 @@ import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import userServices from "@/services/user/service";
 import { useToaster } from "@/context/ToasterContext";
-
-type CartType = {
-  product_id: string;
-  size: number;
-  qty: number;
-}[];
+import { CartType } from "@/types/cart.type";
 
 type ParamsType = { id: string };
 export default function DetailProduct({ params }: { params: any }) {
@@ -28,7 +23,7 @@ export default function DetailProduct({ params }: { params: any }) {
   const [product, setProduct] = useState<ProductType | null>(null);
   const [selectedSize, setSelectedSize] = useState<null | number>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [cart, setCart] = useState<CartType | []>([]);
+  const [cart, setCart] = useState<CartType[] | []>([]);
 
   const handleAddToCart = async () => {
     if (selectedSize) {
@@ -90,17 +85,18 @@ export default function DetailProduct({ params }: { params: any }) {
             <Image
               priority
               src={product.image}
-              width={350}
-              height={350}
+              width={450}
+              height={450}
               alt="Product Image"
               className="rounded-xl my-auto"
             />
             <div className="w-sm my-auto">
               <h2 className="text-2xl font-bold">{product.name}</h2>
-              <h5 className="text-lg mb-2">{product.category}</h5>
-              <h5 className="font-semibold mb-4">
+              <h5 className="text-lg mb-2 font-sans">{product.category}</h5>
+              <h5 className="font-semibold mb-2 font-sans">
                 {convertToIDR(product.price)}
               </h5>
+              <p className="text-sm mb-4">{product.description}</p>
               <h5 className="font-semibold mb-2 text-sm">Select Size</h5>
               <div className="grid grid-cols-3 gap-3 mb-4">
                 {product.stock

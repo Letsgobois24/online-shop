@@ -23,8 +23,8 @@ const listSidebarItem: ListsType = [
 export default function MemberLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex">
-      <Sidebar lists={listSidebarItem} />
-      <div className="py-8 px-10 w-screen h-screen">{children}</div>
+      <Sidebar lists={listSidebarItem} title="Member Panel" />
+      <div className="py-8 px-10 w-screen h-screen ml-64">{children}</div>
     </div>
   );
 }

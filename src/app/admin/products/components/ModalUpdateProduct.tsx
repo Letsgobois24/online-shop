@@ -18,6 +18,7 @@ import InputFile from "@/components/Elements/Input/InputFile";
 import Label from "@/components/Elements/Input/Label";
 import productsServices from "@/services/products/services";
 import Image from "next/image";
+import TextAreaField from "@/components/Elements/Input/TextAreaField";
 
 type PropTypes = {
   setUpdatedProduct: Dispatch<SetStateAction<ProductType | null>>;
@@ -135,6 +136,15 @@ export default function ModalUpdateProduct({
               changeFile={changeImage}
               setChangeFile={setChangeImage}
               required={false}
+            />
+          </div>
+          <div className="col-span-2">
+            <TextAreaField
+              name="description"
+              label="Description"
+              className="text-sm h-24"
+              placeholder="Insert description product"
+              defaultValue={updatedProduct?.description || ""}
             />
           </div>
           <label className="col-span-2 font-semibold" htmlFor="stock">

@@ -22,7 +22,7 @@ export default function ProductsPage() {
   return (
     <div className="flex">
       <ProductSidebar />
-      <main className="w-full p-6">
+      <main className="w-full p-6 ml-64">
         <Title>Products Page</Title>
         {Object.keys(products).length > 0 ? (
           <div className="grid md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-3">

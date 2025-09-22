@@ -14,6 +14,7 @@ import InputField from "@/components/Elements/Input/InputField";
 import Select from "@/components/Elements/Input/Select";
 import type { StockType } from "@/types/product.type";
 import InputFile from "@/components/Elements/Input/InputFile";
+import TextAreaField from "@/components/Elements/Input/TextAreaField";
 import Label from "@/components/Elements/Input/Label";
 import productsServices from "@/services/products/services";
 import Image from "next/image";
@@ -112,7 +113,7 @@ export default function ModalAddProduct({
               width={220}
               height={220}
               alt="Product Image"
-              className="mb-3 mx-auto border-gray-300 border-2"
+              className="mb-3 mx-auto border-gray-300 border-2 rounded-md"
               src={
                 changeImage
                   ? URL.createObjectURL(changeImage)
@@ -123,6 +124,14 @@ export default function ModalAddProduct({
               name="product-image"
               changeFile={changeImage}
               setChangeFile={setChangeImage}
+            />
+          </div>
+          <div className="col-span-2">
+            <TextAreaField
+              name="description"
+              label="Description"
+              className="text-sm h-24"
+              placeholder="Insert description product"
             />
           </div>
           <label className="col-span-2 font-semibold" htmlFor="stock">

@@ -48,6 +48,8 @@ export async function POST(request: NextRequest) {
     data.status = data.status == "true" ? true : false;
     data.stock = JSON.parse(data.stock);
 
+    console.log({ data });
+
     const { id } = await addData("products", data);
     const fileName = `main.${file.type.split("/")[1]}`;
     const url = await uploadFile("products", id, file, fileName);

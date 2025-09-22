@@ -21,6 +21,7 @@ const colors = {
   warning: "text-white bg-yellow-500 hover:bg-yellow-600 focus:ring-yellow-300",
   white:
     "text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:ring-gray-100",
+  dark: "text-white bg-gray-900 border border-gray-200 hover:bg-gray-200 hover:text-gray-900 focus:ring-gray-100",
 };
 
 const sizes = {

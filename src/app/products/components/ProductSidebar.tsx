@@ -1,7 +1,7 @@
 const ProductSidebar = () => {
   return (
-    <aside className="bg-blue-900 w-64 text-white font-sans h-[88vh] flex-col p-6 hidden sm:flex">
-      <h2 className="font-semibold tracking-wider">All Products</h2>
+    <aside className="fixed top-0 bg-blue-900 w-64 text-white font-sans h-screen flex-col p-6 hidden sm:flex">
+      <h2 className="font-semibold tracking-wider mt-[12vh]">All Products</h2>
       <nav className="">
         <h3 className="my-1">Gender</h3>
         <div className="flex flex-col space-y-1">

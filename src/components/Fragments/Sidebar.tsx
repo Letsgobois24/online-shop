@@ -13,13 +13,19 @@ export type ListsType = Array<{
   icon: IconName;
 }>;
 
-const Sidebar = ({ lists }: { lists: ListsType }) => {
+const Sidebar = ({
+  lists,
+  title = "",
+}: {
+  lists: ListsType;
+  title: string;
+}) => {
   const pathname = usePathname();
   const segments = pathname.split("/");
 
   return (
-    <aside className="bg-blue-900 w-65 text-white font-sans h-[88vh] flex-col p-6 hidden sm:flex">
-      <h2 className="text-center font-semibold text-2xl pb-5">Admin Panel</h2>
+    <aside className="bg-blue-900 w-64 text-white font-sans h-screen fixed flex-col p-6 hidden sm:flex">
+      <h2 className="text-center font-semibold text-2xl pb-5">{title}</h2>
       <div className="flex flex-col justify-between h-full">
         <ul className="flex flex-col space-y-2">
           {lists.map((list, index) => {

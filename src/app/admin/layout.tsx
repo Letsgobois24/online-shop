@@ -23,8 +23,8 @@ const listSidebarItem: ListsType = [
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex">
-      <Sidebar lists={listSidebarItem} />
-      <div className="py-8 px-10 w-full">{children}</div>
+      <Sidebar lists={listSidebarItem} title="Admin Panel" />
+      <div className="py-8 px-10 w-full ml-64">{children}</div>
     </div>
   );
 }

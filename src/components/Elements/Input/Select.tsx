@@ -1,8 +1,8 @@
 import Label from "./Label";
 
 type Options = {
-  label: string;
-  value: string;
+  label: string | number;
+  value: string | number;
 };
 
 type SelectTypeProps = {

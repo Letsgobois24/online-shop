@@ -58,7 +58,6 @@ export async function PUT(request: NextRequest, { params }: any) {
     let url,
       res = true;
     const data: any = Object.fromEntries(formData.entries());
-    console.log({ file });
     if (file) {
       const { fileName } = await getDataById("products", id);
       res = await deleteFile(`products/${id}/${fileName}`);
