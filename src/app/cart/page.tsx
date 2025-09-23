@@ -1,7 +1,7 @@
 "use client";
 
 import Title from "@/components/Elements/Title";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { CartType } from "@/types/cart.type";
 import { ProductType } from "@/types/product.type";
 import userServices from "@/services/user/service";
@@ -33,7 +33,7 @@ export default function CartPage() {
 
   useEffect(() => {
     const getCart = async () => {
-      const res = await userServices.getCart(session?.accessToken || "");
+      const res = await userServices.getCart();
       setCart(res.data.data);
     };
 

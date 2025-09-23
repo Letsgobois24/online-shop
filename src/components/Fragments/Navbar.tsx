@@ -42,49 +42,65 @@ const Navbar = () => {
         ))}
       </ul>
       {status === "authenticated" ? (
-        <div
-          onClick={() => setDropDownUser(!dropDownUser)}
-          className="cursor-pointer"
-        >
-          <div className="relative text-gray-900 flex space-x-2 items-center">
-            <Image
-              src={session.user.image || "/logo/person-logo.png"}
-              alt="Profile Image"
-              width={35}
-              height={35}
-              className="rounded-full w-10 h-10"
-            />
-            <div className="relative">
-              <div className=" text-white hover:text-gray-100">
-                <Icon
-                  icon="dropDown"
-                  size={20}
-                  className={`transition duration-200 ${
-                    dropDownUser ? "-rotate-180" : ""
-                  }`}
-                ></Icon>
-              </div>
-              <div
-                className={`${
-                  dropDownUser ? "" : "hidden"
-                } absolute bg-gray-50 right-2 mt-5 rounded-md border border-gray-300`}
+        <div>
+          <div className="relative flex space-x-4 items-center">
+            <div
+              className={`${
+                pathname === "/cart"
+                  ? "border-b bg-white rounded-full text-gray-900"
+                  : "hover:text-gray-200 text-white"
+              } cursor-pointer w-9 h-9`}
+            >
+              <Link
+                href="/cart"
+                className="w-full h-full flex justify-center items-center"
               >
-                <ul>
-                  <li className="border-b border-b-gray-300 h-10 w-26 hover:bg-gray-100">
-                    <Link
-                      href="/member/profile"
-                      className="cursor-pointer h-full flex items-center justify-center"
+                <Icon icon="cart" size={20} />
+              </Link>
+            </div>
+            <div
+              className="flex space-x-1 items-center cursor-pointer"
+              onClick={() => setDropDownUser(!dropDownUser)}
+            >
+              <Image
+                src={session.user.image || "/logo/person-logo.png"}
+                alt="Profile Image"
+                width={35}
+                height={35}
+                className="rounded-full w-10 h-10"
+              />
+              <div className="relative">
+                <div className=" text-white hover:text-gray-100">
+                  <Icon
+                    icon="dropDown"
+                    size={20}
+                    className={`transition duration-200 ${
+                      dropDownUser ? "-rotate-180" : ""
+                    }`}
+                  ></Icon>
+                </div>
+                <div
+                  className={`${
+                    dropDownUser ? "" : "hidden"
+                  } absolute bg-gray-50 right-2 mt-5 rounded-md border border-gray-300`}
+                >
+                  <ul>
+                    <li className="border-b border-b-gray-300 h-10 w-26 hover:bg-gray-100">
+                      <Link
+                        href="/member/profile"
+                        className="cursor-pointer h-full flex items-center justify-center"
+                      >
+                        Profile
+                      </Link>
+                    </li>
+                    <li
+                      onClick={() => signOut()}
+                      className=" h-10 w-26 hover:bg-gray-100 cursor-pointer flex items-center justify-center"
                     >
-                      Profile
-                    </Link>
-                  </li>
-                  <li
-                    onClick={() => signOut()}
-                    className=" h-10 w-26 hover:bg-gray-100 cursor-pointer flex items-center justify-center"
-                  >
-                    Logout
-                  </li>
-                </ul>
+                      Logout
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
@@ -100,63 +116,6 @@ const Navbar = () => {
           Sign In
         </Button>
       )}
-
-      {/* <ul className="flex justify-end items-center space-x-6">
-        {status === "authenticated" ? (
-          <>
-            <li>
-              <Link
-                href="/member/profile"
-                className="flex space-x-3 items-center"
-              >
-                <Image
-                  src={session.user.image || "/logo/person-logo.png"}
-                  alt="Profile Image"
-                  width={35}
-                  height={35}
-                  className="rounded-full w-10 h-10"
-                />
-                <p className="text-white text-sm">{session?.user?.fullname}</p>
-              </Link>
-            </li>
-            <li
-              className={`${
-                pathname === "/cart"
-                  ? "border-b bg-white rounded-full text-gray-900"
-                  : "hover:text-gray-200"
-              } cursor-pointer w-8 h-8`}
-            >
-              <Link
-                href="/cart"
-                className="w-full h-full flex justify-center items-center"
-              >
-                <Icon icon="cart" size={20} />
-              </Link>
-            </li>
-            <li>
-              <Button
-                onClick={() => signOut()}
-                type="button"
-                variant="primary"
-                size="small"
-                className="text-sm font-semibold"
-              >
-                Sign Out
-              </Button>
-            </li>
-          </>
-        ) : (
-          <Button
-            onClick={() => signIn()}
-            type="button"
-            variant="primary"
-            size="small"
-            className="text-sm font-semibold"
-          >
-            Sign In
-          </Button>
-        )}
-      </ul> */}
     </nav>
   );
 };

@@ -12,22 +12,38 @@ type PropsType = { params: Promise<{ id: string }> };
 
 export async function GET(request: NextRequest, { params }: PropsType) {
   const { id } = await params;
-  try {
-    const product = await getDataById("products", id);
+  const token = request.headers.get("Authorization")?.split(" ")[1] || "";
 
+  try {
+    if (!token) throw new Error();
+
+    const decoded: any = jwt.verify(token, process.env.NEXTAUTH_SECRET || "");
+    if (!decoded) throw new Error();
+
+    try {
+      const product = await getDataById("products", id);
+      return NextResponse.json(
+        {
+          success: true,
+          message: "Success to get product",
+          data: product,
+        },
+        { status: 200 }
+      );
+    } catch {
+      return NextResponse.json({
+        success: true,
+        message: "Failed to get product",
+      });
+    }
+  } catch {
     return NextResponse.json(
       {
-        success: true,
-        message: "Success to get product",
-        data: product,
+        success: false,
+        message: "Access denied",
       },
-      { status: 200 }
+      { status: 403 }
     );
-  } catch {
-    return NextResponse.json({
-      success: true,
-      message: "Failed to get product",
-    });
   }
 }
 

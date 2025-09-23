@@ -2,7 +2,6 @@
 
 import Button from "@/components/Elements/Button";
 import Modal from "@/components/Fragments/Modal";
-import { useSession } from "next-auth/react";
 import React, {
   type Dispatch,
   type FormEvent,
@@ -33,7 +32,6 @@ export default function ModalAddProduct({
     { size: 0, qty: 0 },
   ]);
   const [changeImage, setChangeImage] = useState<File | null>(null);
-  const session = useSession();
   const { showToaster } = useToaster();
 
   const handleAddStock = (i: number, stock: "qty" | "size", value: number) => {
@@ -52,10 +50,7 @@ export default function ModalAddProduct({
     formData.delete("qty");
 
     // Add data and upload image
-    const res = await productsServices.addProduct(
-      formData,
-      session.data?.accessToken || ""
-    );
+    const res = await productsServices.addProduct(formData);
 
     setIsLoading(false);
     setUpdateData(true);

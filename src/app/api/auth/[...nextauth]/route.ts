@@ -58,7 +58,6 @@ const authOptions: any = {
       }
 
       if (account?.provider === "google") {
-        console.log(user);
         const data = await signInWithGoogle({
           fullname: user.name,
           email: user.email,

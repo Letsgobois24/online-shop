@@ -1,7 +1,6 @@
 import Button from "@/components/Elements/Button";
 import Icon from "@/components/Elements/Icon";
 import Modal from "@/components/Fragments/Modal";
-import { useSession } from "next-auth/react";
 import {
   type Dispatch,
   type FormEvent,
@@ -24,17 +23,13 @@ export default function ModalDeleteProduct({
   setUpdateData,
 }: PropTypes) {
   const [isLoading, setIsLoading] = useState(false);
-  const session = useSession();
   const { showToaster } = useToaster();
 
   const handleDeleteProduct = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
 
-    const res = await productsServices.deleteProduct(
-      deletedProduct?.id || "",
-      session.data?.accessToken || ""
-    );
+    const res = await productsServices.deleteProduct(deletedProduct?.id || "");
 
     if (res.status === 200) {
       setDeletedProduct(null);

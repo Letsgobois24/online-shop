@@ -1,25 +1,20 @@
 import instance from "@/lib/axios/instance";
 
+const endpoint = "/api/products";
+
 export const productsServices = {
-  getAllProducts: () => instance.get("/api/products"),
-  getProduct: (id: string) => instance.get("/api/products/" + id),
-  addProduct: (formData: FormData, token: string) =>
-    instance.post("/api/products", formData, {
+  getAllProducts: () => instance.get(endpoint),
+  getProduct: (id: string) => instance.get(`${endpoint}/${id}`),
+  addProduct: (formData: FormData) =>
+    instance.post(endpoint, formData, {
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
       },
     }),
-  deleteProduct: (id: string, token: string) =>
-    instance.delete(`/api/products/${id}`, {
+  deleteProduct: (id: string) => instance.delete(`${endpoint}/${id}`),
+  updateProduct: (id: string, formData: FormData) =>
+    instance.put(`${endpoint}/${id}`, formData, {
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }),
-  updateProduct: (id: string, formData: FormData, token: string) =>
-    instance.put(`/api/products/${id}`, formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
       },
     }),

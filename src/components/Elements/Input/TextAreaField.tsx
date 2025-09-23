@@ -1,6 +1,5 @@
 "use client";
 
-import React, { ChangeEvent } from "react";
 import Label from "./Label";
 
 interface TextAreaFieldProps {

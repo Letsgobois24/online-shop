@@ -48,7 +48,6 @@ export async function PUT(request: NextRequest) {
 
   try {
     const decoded: any = jwt.verify(token, process.env.NEXTAUTH_SECRET || "");
-    console.log(decoded);
 
     const res = await updateData("users", decoded.id, data);
     if (!res) {

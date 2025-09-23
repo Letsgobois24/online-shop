@@ -37,10 +37,7 @@ export default function ProfilePage() {
       showToaster("warning", "File bigger than 1 MB");
       return;
     }
-    const res = await userServices.uploadProfile(
-      formData,
-      session.data?.accessToken || ""
-    );
+    const res = await userServices.uploadProfile(formData);
     if (res.status === 200) {
       const image = res.data.image;
       setProfile({ ...profile, image });
@@ -61,10 +58,7 @@ export default function ProfilePage() {
       phone: form.phone.value as string,
     };
 
-    const res = await userServices.updateProfile(
-      data,
-      session.data?.accessToken || ""
-    );
+    const res = await userServices.updateProfile(data);
     if (res.status == 200) {
       setProfile({
         ...profile,
@@ -89,10 +83,7 @@ export default function ProfilePage() {
       data.oldPassword = (form["old-password"].value as string) || "";
     }
 
-    const res = await userServices.changePassword(
-      data,
-      session.data?.accessToken || ""
-    );
+    const res = await userServices.changePassword(data);
     const newPassword = res.data.password;
     if (res.status == 200) {
       setProfile({
@@ -108,9 +99,7 @@ export default function ProfilePage() {
   useEffect(() => {
     if (session.status == "authenticated") {
       const getProfile = async () => {
-        const res = await userServices.getProfile(
-          session.data?.accessToken || ""
-        );
+        const res = await userServices.getProfile();
         setProfile(res.data.data);
       };
       getProfile();

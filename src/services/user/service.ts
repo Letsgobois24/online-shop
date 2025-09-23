@@ -5,58 +5,35 @@ import type {
   UserUpdateType,
 } from "./service.type";
 
+const adminEndpoint = "/api/users";
+const memberEndpoint = {
+  user: "/api/user",
+  profile: "/api/user/profile",
+  upload: "/api/user/upload",
+  cart: "/api/user/cart",
+  changePassword: "/api/user/change-password",
+};
+
 export const userServices = {
-  getAllUsers: () => instance.get("/api/users"),
-  updateUser: (id: string, data: UserUpdateType, token: string) =>
-    instance.put(`/api/users/${id}`, data, {
+  getAllUsers: () => instance.get(adminEndpoint),
+  updateUser: (id: string, data: UserUpdateType) =>
+    instance.put(`${adminEndpoint}/${id}`, data),
+  getUser: (id: string) => instance.get(`${adminEndpoint}/${id}`),
+  deleteUser: (id: string) => instance.delete(`${adminEndpoint}/${id}`),
+
+  getProfile: () => instance.get(`${memberEndpoint}/profile`),
+  uploadProfile: (formData: FormData) =>
+    instance.put(memberEndpoint.upload, formData, {
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }),
-  getUser: (id: string) => instance.get(`/api/users/${id}`),
-  deleteUser: (id: string, token: string) =>
-    instance.delete(`/api/users/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }),
-  getProfile: (token: string) =>
-    instance.get("/api/user/profile", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }),
-  uploadProfile: (formData: FormData, token: string) =>
-    instance.put("/api/user/upload", formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
       },
     }),
-  updateProfile: (data: ChangeProfileType, token: string) =>
-    instance.put(`/api/user/profile`, data, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }),
-  changePassword: (data: ChangePasswordType, token: string) =>
-    instance.put(`/api/user/change-password`, data, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }),
-  addToCart: (data: any, token: string) =>
-    instance.put(`/api/user/cart`, data, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }),
-  getCart: (token: string) =>
-    instance.get("/api/user/cart", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }),
+  updateProfile: (data: ChangeProfileType) =>
+    instance.put(memberEndpoint.profile, data),
+  changePassword: (data: ChangePasswordType) =>
+    instance.put(memberEndpoint.changePassword, data),
+  addToCart: (data: any) => instance.put(memberEndpoint.cart, data),
+  getCart: () => instance.get(memberEndpoint.cart),
 };
 
 export default userServices;

@@ -11,7 +11,6 @@ import {
   useState,
 } from "react";
 import userServices from "@/services/user/service";
-import { useSession } from "next-auth/react";
 import { useToaster } from "@/context/ToasterContext";
 
 export default function ModalUpdatedUser({
@@ -24,7 +23,6 @@ export default function ModalUpdatedUser({
   setUpdateData: Dispatch<SetStateAction<boolean>>;
 }) {
   const [isLoading, setIsLoading] = useState(false);
-  const session = useSession();
   const { showToaster } = useToaster();
 
   const handleUpdateUser = async (e: FormEvent<HTMLFormElement>) => {
@@ -37,11 +35,7 @@ export default function ModalUpdatedUser({
     const data = {
       role: formData.get("role") as RoleType,
     };
-    const res = await userServices.updateUser(
-      updatedUser.id || "",
-      data,
-      session.data?.accessToken || ""
-    );
+    const res = await userServices.updateUser(updatedUser.id || "", data);
     if (res.status === 200) {
       setUpdatedUser({});
       setUpdateData(true);

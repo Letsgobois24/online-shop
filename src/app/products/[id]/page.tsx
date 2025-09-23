@@ -18,7 +18,7 @@ export default function DetailProduct({ params }: { params: any }) {
   const router = useRouter();
   const pathname = usePathname();
   const { showToaster } = useToaster();
-  const { status, data: session } = useSession();
+  const { status } = useSession();
   const { id } = React.use(params) as ParamsType;
   const [product, setProduct] = useState<ProductType | null>(null);
   const [selectedSize, setSelectedSize] = useState<null | number>(null);
@@ -45,10 +45,7 @@ export default function DetailProduct({ params }: { params: any }) {
       setCart(newCart);
 
       try {
-        const res = await userServices.addToCart(
-          { cart: newCart },
-          session?.accessToken || ""
-        );
+        const res = await userServices.addToCart({ cart: newCart });
         if (res) {
           showToaster("success", res.data.message);
         }
@@ -70,7 +67,7 @@ export default function DetailProduct({ params }: { params: any }) {
   useEffect(() => {
     if (status == "authenticated") {
       const getCart = async () => {
-        const res = await userServices.getCart(session?.accessToken || "");
+        const res = await userServices.getCart();
         setCart(res.data.data);
       };
       getCart();
