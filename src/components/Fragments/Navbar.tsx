@@ -43,7 +43,7 @@ const Navbar = () => {
       </ul>
       {status === "authenticated" ? (
         <div>
-          <div className="relative flex space-x-4 items-center">
+          <div className="relative text-gray-900 flex space-x-4 items-center">
             <div
               className={`${
                 pathname === "/cart"

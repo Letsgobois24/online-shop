@@ -21,7 +21,7 @@ export const userServices = {
   getUser: (id: string) => instance.get(`${adminEndpoint}/${id}`),
   deleteUser: (id: string) => instance.delete(`${adminEndpoint}/${id}`),
 
-  getProfile: () => instance.get(`${memberEndpoint}/profile`),
+  getProfile: () => instance.get(memberEndpoint.profile),
   uploadProfile: (formData: FormData) =>
     instance.put(memberEndpoint.upload, formData, {
       headers: {
