@@ -109,8 +109,8 @@ export default function ProfilePage() {
   return (
     <>
       <Title>Profile Page</Title>
-      <div className="flex md:flex-row space-y-5 md:space-y-0 flex-col space-x-5 items-stretch">
-        <div className="w-full md:w-1/4 flex flex-col items-center justify-center border rounded-xl border-slate-400 shadow-lg p-6">
+      <div className="grid xl:grid-cols-3 md:grid-cols-2 gap-5">
+        <div className="flex flex-col items-center justify-center border rounded-xl border-slate-400 shadow-lg p-6">
           <Title size="medium" className="flex-1">
             Avatar
           </Title>
@@ -124,8 +124,8 @@ export default function ProfilePage() {
                 className="w-full h-full"
                 src={profile?.image || "/logo/person-logo.png"}
                 alt="Profile Image"
-                width={100}
-                height={100}
+                width={50}
+                height={50}
               />
             </div>
 
@@ -145,7 +145,7 @@ export default function ProfilePage() {
             </Button>
           </form>
         </div>
-        <div className="w-full flex flex-col md:w-1/2 border rounded-xl border-slate-400 shadow-lg p-6">
+        <div className="flex flex-col border rounded-xl border-slate-400 shadow-lg p-6">
           <Title size="medium" className="flex-1">
             Change Profile
           </Title>
@@ -189,7 +189,7 @@ export default function ProfilePage() {
             </Button>
           </form>
         </div>
-        <div className="w-full md:w-1/4 border rounded-xl border-slate-400 shadow-lg p-6">
+        <div className="border rounded-xl border-slate-400 shadow-lg p-6">
           <Title size="medium" className="flex-1">
             Change Password
           </Title>

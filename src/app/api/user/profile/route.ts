@@ -1,78 +1,38 @@
-import { NextResponse, type NextRequest } from "next/server";
-import jwt from "jsonwebtoken";
+import { type NextRequest } from "next/server";
 import { getDataById, updateData } from "@/lib/firebase/service";
+import { verifyToken } from "@/utils/verifyToken";
+import { errorMessage, successMessage } from "@/utils/response";
 
 // Get Profile
 export async function GET(request: NextRequest) {
-  const token = request.headers.get("Authorization")?.split(" ")[1] || "";
-  if (!token) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Token not found",
-      },
-      { status: 401 }
-    );
-  }
-
   try {
-    const decoded: any = jwt.verify(token, process.env.NEXTAUTH_SECRET || "");
+    const decoded: any = verifyToken(request);
     if (!decoded) {
       throw new Error();
     }
 
     const profile = await getDataById("users", decoded.id);
-    return NextResponse.json(
-      {
-        success: true,
-        message: "Success to get user profile",
-        data: profile,
-      },
-      { status: 200 }
-    );
+    return successMessage("Success to get user profile", 200, profile);
   } catch {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Access denied",
-      },
-      { status: 403 }
-    );
+    return errorMessage();
   }
 }
 
 // Update Profile
 export async function PUT(request: NextRequest) {
-  const data = await request.json();
-  const token = request.headers.get("Authorization")?.split(" ")[1] || "";
-
   try {
-    const decoded: any = jwt.verify(token, process.env.NEXTAUTH_SECRET || "");
+    const decoded = verifyToken(request);
+    if (!decoded) {
+      throw new Error();
+    }
+    const data = await request.json();
 
     const res = await updateData("users", decoded.id, data);
-    if (!res) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Failed to change profile",
-        },
-        { status: 400 }
-      );
+    if (res) {
+      return successMessage("Profile has been changed");
     }
-    return NextResponse.json(
-      {
-        success: true,
-        message: "Profile has been changed",
-      },
-      { status: 200 }
-    );
+    return errorMessage("Failed to change profile", 400);
   } catch {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Access denied",
-      },
-      { status: 403 }
-    );
+    return errorMessage();
   }
 }

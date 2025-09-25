@@ -2,27 +2,10 @@
 
 // import type { Metadata } from "next";
 import Navbar from "@/components/Fragments/Navbar";
-import { Geist, Geist_Mono, Lato } from "next/font/google";
+import { geistSans, geistMono, lato } from "@/lib/font/fonts";
 import "./globals.css";
-import { SessionProvider } from "next-auth/react";
 import { usePathname } from "next/navigation";
-import { ToasterProvider } from "@/context/ToasterContext";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const lato = Lato({
-  variable: "--font-lato",
-  subsets: ["latin"],
-  weight: ["100", "300", "400", "700", "900"],
-});
+import Providers from "@/lib/providers";
 
 // export const metadata: Metadata = {
 //   title: "Create Next App",
@@ -43,12 +26,10 @@ export default function RootLayout({
       <body
         className={`${lato.className} ${lato.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <SessionProvider>
-          <ToasterProvider>
-            {!disableNavbar.includes(pathname.split("/")[1]) && <Navbar />}
-            {children}
-          </ToasterProvider>
-        </SessionProvider>
+        <Providers>
+          {!disableNavbar.includes(pathname.split("/")[1]) && <Navbar />}
+          {children}
+        </Providers>
       </body>
     </html>
   );

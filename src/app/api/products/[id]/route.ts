@@ -1,4 +1,4 @@
-import { type NextRequest, NextResponse } from "next/server";
+import { type NextRequest } from "next/server";
 import {
   deleteData,
   deleteFile,
@@ -6,63 +6,27 @@ import {
   updateData,
   uploadFile,
 } from "@/lib/firebase/service";
-import jwt from "jsonwebtoken";
+import { errorMessage, successMessage } from "@/utils/response";
+import { verifyToken } from "@/utils/verifyToken";
 
-type PropsType = { params: Promise<{ id: string }> };
+type ParamsType = { params: Promise<{ id: string }> };
 
-export async function GET(request: NextRequest, { params }: PropsType) {
+export async function GET(request: NextRequest, { params }: ParamsType) {
   const { id } = await params;
-  const token = request.headers.get("Authorization")?.split(" ")[1] || "";
 
   try {
-    if (!token) throw new Error();
-
-    const decoded: any = jwt.verify(token, process.env.NEXTAUTH_SECRET || "");
-    if (!decoded) throw new Error();
-
-    try {
-      const product = await getDataById("products", id);
-      return NextResponse.json(
-        {
-          success: true,
-          message: "Success to get product",
-          data: product,
-        },
-        { status: 200 }
-      );
-    } catch {
-      return NextResponse.json({
-        success: true,
-        message: "Failed to get product",
-      });
-    }
+    const product = await getDataById("products", id);
+    return successMessage("Success to get product", 200, product);
   } catch {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Access denied",
-      },
-      { status: 403 }
-    );
+    return errorMessage("Failed to get product", 400);
   }
 }
 
-export async function PUT(request: NextRequest, { params }: any) {
+export async function PUT(request: NextRequest, { params }: ParamsType) {
   const { id } = await params;
-  const token = request.headers.get("Authorization")?.split(" ")[1] || "";
-
-  if (!token) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Token not found",
-      },
-      { status: 401 }
-    );
-  }
 
   try {
-    const decoded: any = jwt.verify(token, process.env.NEXTAUTH_SECRET || "");
+    const decoded = verifyToken(request);
     if (!decoded) {
       throw new Error();
     }
@@ -87,72 +51,31 @@ export async function PUT(request: NextRequest, { params }: any) {
 
     res = (await updateData("products", id, data)) && res;
 
-    if (res) {
-      return NextResponse.json(
-        {
-          success: true,
-          message: "Success to update product",
-        },
-        { status: 200 }
-      );
-    } else {
-      return NextResponse.json(
-        {
-          success: true,
-          message: "Failed to update product",
-        },
-        { status: 400 }
-      );
+    if (!res) {
+      return errorMessage("Failed to update product", 400);
     }
+    return successMessage("Success to update product");
   } catch {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Access denied",
-      },
-      { status: 403 }
-    );
+    return errorMessage();
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: any) {
-  const { id } = await params;
-  const token = request.headers.get("Authorization")?.split(" ")[1] || "";
-
+export async function DELETE(request: NextRequest, { params }: ParamsType) {
   try {
-    const decoded: any = jwt.verify(token, process.env.NEXTAUTH_SECRET || "");
-
-    if (decoded?.role !== "admin") {
+    const decoded = verifyToken(request, true);
+    if (!decoded) {
       throw new Error();
     }
+    const { id } = await params;
     const { fileName } = await getDataById("products", id);
 
     const fileRes = await deleteFile(`products/${id}/${fileName}`);
     const dataRes = await deleteData("products", id);
     if (dataRes && fileRes) {
-      return NextResponse.json(
-        {
-          success: true,
-          message: "Product has been deleted",
-        },
-        { status: 200 }
-      );
-    } else {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Failed delete product",
-        },
-        { status: 400 }
-      );
+      return successMessage("Product has been deleted");
     }
+    return errorMessage("Failed delete product", 400);
   } catch {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Access denied",
-      },
-      { status: 403 }
-    );
+    return errorMessage();
   }
 }

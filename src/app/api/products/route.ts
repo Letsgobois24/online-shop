@@ -1,58 +1,26 @@
-import { type NextRequest, NextResponse } from "next/server";
+import { type NextRequest } from "next/server";
 import {
   addData,
   getAllData,
   updateData,
   uploadFile,
 } from "@/lib/firebase/service";
-import jwt from "jsonwebtoken";
+import { errorMessage, successMessage } from "@/utils/response";
+import { verifyToken } from "@/utils/verifyToken";
 
 export async function GET(request: NextRequest) {
-  const token = request.headers.get("Authorization")?.split(" ")[1] || "";
-
   try {
-    if (!token) throw new Error();
-
-    const decoded: any = jwt.verify(token, process.env.NEXTAUTH_SECRET || "");
-    if (!decoded) throw new Error();
-
     const data = await getAllData("products");
-    return NextResponse.json(
-      {
-        success: true,
-        message: "Success to get data",
-        data,
-      },
-      { status: 200 }
-    );
+    return successMessage("Success to get data", 200, data);
   } catch {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Access denied",
-      },
-      { status: 403 }
-    );
+    return errorMessage("Access Denied", 403);
   }
 }
 
 export async function POST(request: NextRequest) {
-  const token = request.headers.get("Authorization")?.split(" ")[1] || "";
-  if (!token) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Token not found",
-      },
-      { status: 401 }
-    );
-  }
-
   try {
-    const decoded: any = jwt.verify(token, process.env.NEXTAUTH_SECRET || "");
-    if (!decoded || decoded.role != "admin") {
-      throw new Error();
-    }
+    const decoded = verifyToken(request, true);
+    if (!decoded) throw new Error();
     try {
       const formData = await request.formData();
       const file = formData.get("product-image") as File;
@@ -68,30 +36,11 @@ export async function POST(request: NextRequest) {
       const url = await uploadFile("products", id, file, fileName);
       await updateData("products", id, { image: url, fileName });
 
-      return NextResponse.json(
-        {
-          success: true,
-          message: "Success to add product",
-          url,
-        },
-        { status: 200 }
-      );
+      return successMessage("Success to add product");
     } catch {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Failed to add data",
-        },
-        { status: 403 }
-      );
+      return errorMessage("Failed to add data", 403);
     }
   } catch {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Access denied",
-      },
-      { status: 403 }
-    );
+    return errorMessage();
   }
 }

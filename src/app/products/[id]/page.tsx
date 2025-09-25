@@ -46,6 +46,7 @@ export default function DetailProduct({ params }: { params: any }) {
 
       try {
         const res = await userServices.addToCart({ cart: newCart });
+        console.log({ res });
         if (res) {
           showToaster("success", res.data.message);
         }

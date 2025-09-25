@@ -1,27 +1,18 @@
 import { NextResponse, type NextRequest } from "next/server";
-import jwt from "jsonwebtoken";
 import { updateData, uploadFile } from "@/lib/firebase/service";
+import { verifyToken } from "@/utils/verifyToken";
+import { errorMessage } from "@/utils/response";
 
 export async function PUT(request: NextRequest) {
-  const token = request.headers.get("Authorization")?.split(" ")[1] || "";
-  const formData = await request.formData();
-  const file = formData.get("upload-image") as File;
-
-  if (!token) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Token not found",
-      },
-      { status: 401 }
-    );
-  }
-
   try {
-    const decoded: any = jwt.verify(token, process.env.NEXTAUTH_SECRET || "");
+    const decoded: any = verifyToken(request);
     if (!decoded) {
       throw new Error();
     }
+
+    const formData = await request.formData();
+    const file = formData.get("upload-image") as File;
+
     const id = decoded.id;
     try {
       const fileName = "profile." + file.type.split("/")[1];
@@ -36,21 +27,9 @@ export async function PUT(request: NextRequest) {
         { status: 200 }
       );
     } catch {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Failed to upload image",
-        },
-        { status: 500 }
-      );
+      return errorMessage("Failed to upload image", 400);
     }
   } catch {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Access denied",
-      },
-      { status: 403 }
-    );
+    return errorMessage();
   }
 }

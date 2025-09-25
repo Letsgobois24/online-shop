@@ -1,40 +1,23 @@
-import { type NextRequest, NextResponse } from "next/server";
+import { type NextRequest } from "next/server";
 import { getAllData } from "@/lib/firebase/service";
 import { User } from "next-auth";
-import jwt from "jsonwebtoken";
+import { verifyToken } from "@/utils/verifyToken";
+import { errorMessage, successMessage } from "@/utils/response";
 
 export async function GET(request: NextRequest) {
-  const token = request.headers.get("Authorization")?.split(" ")[1] || "";
-
   try {
-    if (!token) {
+    const decoded = verifyToken(request, true);
+    if (!decoded) {
       throw new Error();
     }
 
-    const decoded: any = jwt.verify(token, process.env.NEXTAUTH_SECRET || "");
-    if (!decoded || decoded?.role != "admin") {
-      throw new Error();
-    }
     const users = await getAllData("users");
     users.map((user: User) => {
       delete user.password;
     });
 
-    return NextResponse.json(
-      {
-        success: true,
-        message: "Success to get data",
-        data: users,
-      },
-      { status: 200 }
-    );
+    return successMessage("Success to get users", 200, users);
   } catch {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Access denied",
-      },
-      { status: 403 }
-    );
+    return errorMessage();
   }
 }

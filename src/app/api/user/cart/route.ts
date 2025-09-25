@@ -1,86 +1,35 @@
-import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
+import { NextRequest } from "next/server";
 import { getDataById, updateData } from "@/lib/firebase/service";
+import { verifyToken } from "@/utils/verifyToken";
+import { errorMessage, successMessage } from "@/utils/response";
 
 export async function GET(request: NextRequest) {
-  const token = request.headers.get("Authorization")?.split(" ")[1] || "";
-
-  if (!token) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Token not found",
-      },
-      { status: 401 }
-    );
-  }
-
   try {
-    const decoded: any = jwt.verify(token, process.env.NEXTAUTH_SECRET || "");
-    if (!decoded) {
-      throw new Error();
-    }
+    const decoded = verifyToken(request);
+    if (!decoded) throw new Error();
 
     const user = await getDataById("users", decoded.id);
-    if (user) {
-      return NextResponse.json(
-        {
-          success: true,
-          message: "Success to get cart",
-          data: user.cart || [],
-        },
-        { status: 200 }
-      );
+    if (!user) {
+      return errorMessage("Failed to get cart", 400, []);
     }
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Failed to get cart",
-        data: [],
-      },
-      { status: 400 }
-    );
+    return successMessage("success to get cart", 200, user.cart);
   } catch {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Access denied",
-      },
-      { status: 403 }
-    );
+    return errorMessage();
   }
 }
 
 export async function PUT(request: NextRequest) {
-  const data = await request.json();
-  const token = request.headers.get("Authorization")?.split(" ")[1] || "";
-
   try {
-    const decoded: any = jwt.verify(token, process.env.NEXTAUTH_SECRET || "");
+    const decoded = verifyToken(request);
+    if (!decoded) throw new Error();
+
+    const data = await request.json();
     const res = await updateData("users", decoded.id, data);
     if (res) {
-      return NextResponse.json(
-        {
-          success: true,
-          message: "Success add to cart",
-        },
-        { status: 200 }
-      );
+      return successMessage("Success add to cart", 200);
     }
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Failed add to cart",
-      },
-      { status: 400 }
-    );
+    return errorMessage("Failed add to cart", 400);
   } catch {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Access denied",
-      },
-      { status: 403 }
-    );
+    return errorMessage();
   }
 }

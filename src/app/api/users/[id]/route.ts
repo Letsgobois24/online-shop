@@ -1,86 +1,45 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { deleteData, updateData } from "@/lib/firebase/service";
-import jwt from "jsonwebtoken";
+import { verifyToken } from "@/utils/verifyToken";
+import { errorMessage, successMessage } from "@/utils/response";
 
-// type ParamsType = { params: { id: string } };
+type ParamsType = { params: Promise<{ id: string }> };
 
-export async function PUT(request: NextRequest, { params }: any) {
-  const { id } = await params;
-  const data = await request.json();
-  const token = request.headers.get("Authorization")?.split(" ")[1] || "";
-
+export async function PUT(request: NextRequest, { params }: ParamsType) {
   try {
-    const decoded: any = jwt.verify(token, process.env.NEXTAUTH_SECRET || "");
-    if (decoded?.role !== "admin") {
+    const decoded: any = verifyToken(request, true);
+    if (!decoded) {
       throw new Error();
     }
+
+    const { id } = await params;
+    const data = await request.json();
 
     const res = await updateData("users", id, data);
     if (res) {
-      return NextResponse.json(
-        {
-          success: true,
-          message: "Data has been changed",
-          data,
-        },
-        { status: 200 }
-      );
-    } else {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Failed to change data",
-        },
-        { status: 400 }
-      );
+      return successMessage("Data has been changed", 200, data);
     }
+    return errorMessage("Failed to change data", 400);
   } catch {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Access denied",
-      },
-      { status: 403 }
-    );
+    return errorMessage();
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: any) {
-  const { id } = await params;
-  const token = request.headers.get("Authorization")?.split(" ")[1] || "";
-
+export async function DELETE(request: NextRequest, { params }: ParamsType) {
   try {
-    const decoded: any = jwt.verify(token, process.env.NEXTAUTH_SECRET || "");
+    const decoded = verifyToken(request);
 
-    if (decoded?.role !== "admin") {
+    if (!decoded) {
       throw new Error();
     }
+    const { id } = await params;
 
     const result = await deleteData("users", id);
     if (result) {
-      return NextResponse.json(
-        {
-          success: true,
-          message: "Data pengguna berhasil dihapus",
-        },
-        { status: 200 }
-      );
-    } else {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Data pengguna gagal dihapus",
-        },
-        { status: 400 }
-      );
+      return successMessage("Data pengguna berhasil dihapus", 200);
     }
+    return errorMessage("Failed to delete user", 400);
   } catch {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Access denied",
-      },
-      { status: 403 }
-    );
+    return errorMessage();
   }
 }

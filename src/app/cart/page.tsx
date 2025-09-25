@@ -46,7 +46,7 @@ export default function CartPage() {
         const newCart = await Promise.all(
           cart.map(async (item) => {
             const res = await productsServices.getProduct(item.product_id);
-            return { ...item, ...res.data.data };
+            return { id: item.product_id, ...item, ...res.data.data };
           })
         );
         setProductCart(newCart);

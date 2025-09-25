@@ -1,15 +1,18 @@
 import { NextResponse, type NextRequest } from "next/server";
-import jwt from "jsonwebtoken";
 import { updateData } from "@/lib/firebase/service";
 import { compare, hash } from "bcrypt";
+import { verifyToken } from "@/utils/verifyToken";
+import { errorMessage } from "@/utils/response";
 
 // Update Profile
 export async function PUT(request: NextRequest) {
-  const data = await request.json();
-  const token = request.headers.get("Authorization")?.split(" ")[1] || "";
-
   try {
-    const decoded: any = jwt.verify(token, process.env.NEXTAUTH_SECRET || "");
+    const decoded = verifyToken(request);
+    if (!decoded) {
+      throw new Error();
+    }
+
+    const data = await request.json();
     if (data.encryptedPassword) {
       const confirmPassword = await compare(
         data.oldPassword,
@@ -17,13 +20,7 @@ export async function PUT(request: NextRequest) {
       );
 
       if (!confirmPassword) {
-        return NextResponse.json(
-          {
-            success: false,
-            message: "Failed",
-          },
-          { status: 401 }
-        );
+        return errorMessage("Wrong Password!", 401);
       }
     }
 
@@ -33,13 +30,7 @@ export async function PUT(request: NextRequest) {
     });
 
     if (!res) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Failed to update password",
-        },
-        { status: 400 }
-      );
+      return errorMessage("Failed to update password", 400);
     }
 
     return NextResponse.json(
@@ -51,12 +42,6 @@ export async function PUT(request: NextRequest) {
       { status: 200 }
     );
   } catch {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Access denied",
-      },
-      { status: 403 }
-    );
+    return errorMessage();
   }
 }
