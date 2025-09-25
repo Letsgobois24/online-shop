@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     const data = await getAllData("products");
     return successMessage("Success to get data", 200, data);
   } catch {
-    return errorMessage("Access Denied", 403);
+    return errorMessage("Failed to get products", 400);
   }
 }
 
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
 
       return successMessage("Success to add product");
     } catch {
-      return errorMessage("Failed to add data", 403);
+      return errorMessage("Failed to add data", 400);
     }
   } catch {
     return errorMessage();
