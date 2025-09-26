@@ -41,7 +41,7 @@ export default function ModalDeleteProduct({
 
   return (
     <Modal onClose={() => setDeletedProduct(null)}>
-      <div className="relative p-4 w-full max-w-md max-h-full">
+      <div className="relative p-4 w-full max-h-full">
         <div className="p-4 md:p-5 text-center">
           <Icon
             icon="danger"

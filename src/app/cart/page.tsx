@@ -12,6 +12,7 @@ import { convertToIDR } from "@/utils/currency";
 import Icon from "@/components/Elements/Icon";
 import Button from "@/components/Elements/Button";
 import { useToaster } from "@/context/ToasterContext";
+import Link from "next/link";
 
 export default function CartPage() {
   const [cart, setCart] = useState<CartType[] | []>([]);
@@ -88,13 +89,14 @@ export default function CartPage() {
   return (
     <div className="flex space-x-12 mx-auto max-w-3xl w-full">
       <section className="flex-2">
-        <Title size="medium">Bag</Title>
+        <Title size="medium">Cart</Title>
         <div>
           {productCart.length > 0 ? (
             productCart.map((item) => (
               <React.Fragment key={`${item.product_id}-${item.size}`}>
                 <div className="my-2 flex items-center space-x-3">
                   <Image
+                    priority
                     src={item.image || "/image/empty-image.png"}
                     alt={item.name || "Product Image"}
                     width={130}
@@ -193,9 +195,11 @@ export default function CartPage() {
           <span className="font-sans">{convertToIDR(totalPrice)}</span>
         </div>
         <hr className="my-6 border-gray-300" />
-        <Button className="w-full" variant="dark">
-          Checkout
-        </Button>
+        <Link href="/checkout">
+          <Button className="w-full" variant="dark">
+            Checkout
+          </Button>
+        </Link>
       </section>
     </div>
   );

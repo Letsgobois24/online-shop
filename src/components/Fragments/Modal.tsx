@@ -25,7 +25,7 @@ const Modal = ({
 
   return (
     <div className="flex justify-center items-center fixed top-0 right-0 left-0 bottom-0 z-50 bg-black/50">
-      <div className="relative py-4 w-full max-w-md max-h-full">
+      <div className="relative py-4 w-full max-w-xl max-h-full">
         <div
           ref={ref}
           className="relative bg-white rounded-lg shadow-sm max-h-[90vh] overflow-y-auto"
