@@ -10,21 +10,20 @@ import productsServices from "@/services/products/services";
 import Image from "next/image";
 import { convertToIDR } from "@/utils/currency";
 import Button from "@/components/Elements/Button";
-import { useToaster } from "@/context/ToasterContext";
 import Link from "next/link";
 import { UserType } from "@/types/user.type";
 import ModalChangeAddress from "./components/ModalChangeAddress";
+import ChangeAddress from "./components/ChangeAddress";
 
 export default function CheckoutPage() {
   const [profile, setProfile] = useState<UserType | null>(null);
   const [productCart, setProductCart] = useState<
     (CartType & ProductType)[] | []
   >([]);
-  const [selectedAddress, setSelectedAddress] = useState<number>(0);
+  const [selectedAddress, setSelectedAddress] = useState(0);
   const [modalChangeAddress, setModalChangeAddress] = useState(false);
 
   const { data: session } = useSession();
-  const { showToaster } = useToaster();
 
   const getSubtotalPrice = () => {
     const totalPrice = productCart.reduce((acc, item) => {
@@ -40,7 +39,7 @@ export default function CheckoutPage() {
   const totalPrice = subtotalPrice + taxPrice + deliveryPrice;
 
   useEffect(() => {
-    const getCart = async () => {
+    const getProfile = async () => {
       const res = await userServices.getProfile();
       const profile: UserType = res.data.data;
       setProfile(profile);
@@ -50,7 +49,7 @@ export default function CheckoutPage() {
       setSelectedAddress(mainAddressIdx);
     };
 
-    if (session) getCart();
+    if (session) getProfile();
   }, [session]);
 
   const cart = profile?.cart || [];
@@ -84,21 +83,10 @@ export default function CheckoutPage() {
       <div className="flex space-x-12 mx-auto max-w-3xl w-full">
         <section className="flex-2">
           <Title size="medium">Checkout</Title>
-          <div className="border border-gray-300 px-3 py-2 rounded-md">
-            <h4 className="font-semibold mb-2">Shipping Address</h4>
-            <h6>
-              {address?.recipient} - {address?.phone}
-            </h6>
-            <p className="text-sm">{address?.addressLine}</p>
-            <p className="text-sm mb-3">Note: {address?.note}</p>
-            <Button
-              onClick={() => setModalChangeAddress(true)}
-              variant="dark"
-              className="w-full"
-            >
-              Change Address
-            </Button>
-          </div>
+          <ChangeAddress
+            address={address}
+            setModalChangeAddress={setModalChangeAddress}
+          />
           <div>
             {productCart.length > 0 ? (
               productCart.map((item) => (
@@ -171,10 +159,11 @@ export default function CheckoutPage() {
           </Link>
         </section>
       </div>
-      {modalChangeAddress && (
+      {modalChangeAddress && profile && (
         <ModalChangeAddress
           selectedAddress={selectedAddress}
-          address={profile?.address}
+          profile={profile}
+          setProfile={setProfile}
           setSelectedAddress={setSelectedAddress}
           setModalChangeAddress={setModalChangeAddress}
         />

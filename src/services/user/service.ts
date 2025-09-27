@@ -28,8 +28,7 @@ export const userServices = {
         "Content-Type": "multipart/form-data",
       },
     }),
-  updateProfile: (data: ChangeProfileType) =>
-    instance.put(memberEndpoint.profile, data),
+  updateProfile: (data: any) => instance.put(memberEndpoint.profile, data),
   changePassword: (data: ChangePasswordType) =>
     instance.put(memberEndpoint.changePassword, data),
   addToCart: (data: any) => instance.put(memberEndpoint.cart, data),

@@ -27,7 +27,7 @@ const InputField: React.FC<InputFieldProps> = ({
   onChange,
 }) => {
   return (
-    <>
+    <div>
       <Label name={name} label={label} />
       <input
         type={type}
@@ -40,7 +40,7 @@ const InputField: React.FC<InputFieldProps> = ({
         disabled={disabled}
         onChange={onChange}
       />
-    </>
+    </div>
   );
 };
 

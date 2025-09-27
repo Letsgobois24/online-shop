@@ -26,7 +26,7 @@ export async function PUT(request: NextRequest) {
       throw new Error();
     }
     const data = await request.json();
-
+    console.log({ data });
     const res = await updateData("users", decoded.id, data);
     if (res) {
       return successMessage("Profile has been changed");

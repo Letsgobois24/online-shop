@@ -49,7 +49,7 @@ export default function CartPage() {
         setProductCart(newProductCart);
         showToaster("success", "Success to delete product");
       }
-    } catch (err) {
+    } catch {
       showToaster("danger", "Failed to delete product");
     }
   };
