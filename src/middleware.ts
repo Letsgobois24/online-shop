@@ -12,4 +12,5 @@ export default withAuth(mainMiddleware, [
   "signup",
   "member",
   "cart",
+  "checkout",
 ]);

@@ -10,10 +10,18 @@ import productsServices from "@/services/products/services";
 import Image from "next/image";
 import { convertToIDR } from "@/utils/currency";
 import Button from "@/components/Elements/Button";
-import Link from "next/link";
 import { UserType } from "@/types/user.type";
 import ModalChangeAddress from "./components/ModalChangeAddress";
 import ChangeAddress from "./components/ChangeAddress";
+import Script from "next/script";
+import transactionServices from "@/services/transaction/services";
+import { useToaster } from "@/context/ToasterContext";
+
+declare global {
+  interface Window {
+    snap: any;
+  }
+}
 
 export default function CheckoutPage() {
   const [profile, setProfile] = useState<UserType | null>(null);
@@ -24,6 +32,7 @@ export default function CheckoutPage() {
   const [modalChangeAddress, setModalChangeAddress] = useState(false);
 
   const { data: session } = useSession();
+  const { showToaster } = useToaster();
 
   const getSubtotalPrice = () => {
     const totalPrice = productCart.reduce((acc, item) => {
@@ -34,7 +43,7 @@ export default function CheckoutPage() {
   console.log({ profile });
   const taxRatio = 12;
   const subtotalPrice = getSubtotalPrice();
-  const taxPrice = (taxRatio / 100) * subtotalPrice;
+  const taxPrice = Math.round((taxRatio / 100) * subtotalPrice);
   const deliveryPrice = 15000;
   const totalPrice = subtotalPrice + taxPrice + deliveryPrice;
 
@@ -54,7 +63,7 @@ export default function CheckoutPage() {
 
   const cart = profile?.cart || [];
   const address = profile?.address[selectedAddress || 0];
-
+  console.log({ selectedAddress });
   useEffect(() => {
     if (cart.length > 0) {
       const getProductImage = async () => {
@@ -78,8 +87,35 @@ export default function CheckoutPage() {
     }
   }, [cart]);
 
+  const handleCheckout = async () => {
+    if (!profile) {
+      showToaster("warning", "Please wait a minute");
+      return;
+    }
+    const payload = {
+      user: {
+        fullname: profile.fullname,
+        email: profile.email,
+        address: profile.address[selectedAddress],
+      },
+      transaction: {
+        items: profile.cart,
+        total: totalPrice,
+      },
+    };
+
+    const res = await transactionServices.generateTransaction(payload);
+    window.snap.pay(res.data.data.token);
+  };
+
   return (
     <>
+      <Script
+        src={process.env.NEXT_PUBLIC_MIDTRANS_SNAP_URL}
+        data-client-key={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}
+        strategy="lazyOnload"
+      />
+
       <div className="flex space-x-12 mx-auto max-w-3xl w-full">
         <section className="flex-2">
           <Title size="medium">Checkout</Title>
@@ -152,11 +188,9 @@ export default function CheckoutPage() {
             <span className="font-sans">{convertToIDR(totalPrice)}</span>
           </div>
           <hr className="my-6 border-gray-300" />
-          <Link href="/checkout">
-            <Button className="w-full" variant="dark">
-              Process Payment
-            </Button>
-          </Link>
+          <Button className="w-full" variant="dark" onClick={handleCheckout}>
+            Process Payment
+          </Button>
         </section>
       </div>
       {modalChangeAddress && profile && (

@@ -1,9 +1,5 @@
 import instance from "@/lib/axios/instance";
-import type {
-  ChangePasswordType,
-  ChangeProfileType,
-  UserUpdateType,
-} from "./service.type";
+import type { ChangePasswordType, UserUpdateType } from "./service.type";
 
 const adminEndpoint = "/api/users";
 const memberEndpoint = {

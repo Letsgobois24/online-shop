@@ -2,10 +2,10 @@
 
 // import type { Metadata } from "next";
 import Navbar from "@/components/Fragments/Navbar";
-import { geistSans, geistMono, lato } from "@/lib/font/fonts";
+import { geistSans, geistMono, lato } from "@/utils/font/fonts";
 import "./globals.css";
 import { usePathname } from "next/navigation";
-import Providers from "@/lib/providers";
+import Providers from "@/utils/providers";
 
 // export const metadata: Metadata = {
 //   title: "Create Next App",

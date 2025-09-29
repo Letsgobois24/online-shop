@@ -139,8 +139,6 @@ export default function ModalChangeAddress({
       return item;
     });
 
-    console.log({ newAddress });
-
     const data = {
       address: newAddress,
     };
