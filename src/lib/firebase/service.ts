@@ -50,7 +50,7 @@ export async function getDataById(
 export async function updateData(
   collectionName: string,
   id: string,
-  data: Record<string, unknown>
+  data: any
 ) {
   const snapshot = await firestoreAdmin
     .collection(collectionName)

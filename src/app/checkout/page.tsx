@@ -40,7 +40,6 @@ export default function CheckoutPage() {
     }, 0);
     return totalPrice;
   };
-  console.log({ profile });
   const taxRatio = 12;
   const subtotalPrice = getSubtotalPrice();
   const taxPrice = Math.round((taxRatio / 100) * subtotalPrice);
@@ -62,8 +61,8 @@ export default function CheckoutPage() {
   }, [session]);
 
   const cart = profile?.cart || [];
-  const address = profile?.address[selectedAddress || 0];
-  console.log({ selectedAddress });
+  const address = profile?.address[selectedAddress];
+
   useEffect(() => {
     if (cart.length > 0) {
       const getProductImage = async () => {
@@ -100,7 +99,7 @@ export default function CheckoutPage() {
       },
       transaction: {
         items: profile.cart,
-        total: totalPrice,
+        total: subtotalPrice,
       },
     };
 

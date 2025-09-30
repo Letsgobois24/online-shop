@@ -4,6 +4,7 @@ type SizeType = keyof typeof sizes;
 const sizes = {
   medium: "text-2xl mb-3",
   large: "text-3xl mb-6",
+  extraLarge: "text-5xl mb-8",
 };
 
 export default function Title({

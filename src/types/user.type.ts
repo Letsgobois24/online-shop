@@ -8,6 +8,16 @@ export type AddressType = {
   recipient: string;
 };
 
+export type TransactionType = {
+  orderId: string;
+  address: AddressType;
+  items: CartType[];
+  redirect_url: string;
+  status: string;
+  token: string;
+  total: number;
+};
+
 export type UserType = {
   id: string;
   fullname: string;
@@ -21,4 +31,5 @@ export type UserType = {
   updated_at: Date;
   cart: CartType[];
   address: AddressType[];
+  transaction?: TransactionType[];
 };

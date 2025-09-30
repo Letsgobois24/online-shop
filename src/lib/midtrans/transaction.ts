@@ -5,9 +5,11 @@ export type TransactionType = {
   redirect_url: string;
 };
 
-const createTransaction = async (params: any) => {
+export const createTransaction = async (params: any) => {
   const transaction = await snap.createTransaction(params);
   return transaction;
 };
 
-export default createTransaction;
+export const getTransaction = async (token: string) => {
+  return await snap.transaction.status(token);
+};
