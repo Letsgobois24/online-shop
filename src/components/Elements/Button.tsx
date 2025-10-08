@@ -13,6 +13,7 @@ type ButtonType = {
   isLoading?: boolean;
   size?: SizeType;
   padding?: PaddingType;
+  disabled?: boolean;
 };
 
 const colors = {
@@ -44,14 +45,17 @@ const Button = ({
   isLoading = false,
   size,
   padding,
+  disabled = false,
 }: ButtonType) => {
   return (
     <button
-      disabled={isLoading}
+      disabled={isLoading || disabled}
       type={type}
       onClick={onClick}
       className={`${
-        isLoading ? "bg-slate-300" : colors[variant] + " cursor-pointer"
+        isLoading || disabled
+          ? "bg-slate-300"
+          : colors[variant] + " cursor-pointer"
       } ${className} ${size && sizes[size]} ${
         padding && paddings[padding]
       } focus:ring-2 h-10 focus:outline-none font-medium rounded-lg flex items-center justify-center`}

@@ -1,7 +1,7 @@
 import { type NextRequest } from "next/server";
 import { errorMessage, successMessage } from "@/utils/response";
 import { createTransaction, getTransaction } from "@/lib/midtrans/transaction";
-import { getDataById, updateData } from "@/lib/firebase/service";
+import { getDataById, updateData, arrayUnion } from "@/lib/firebase/service";
 import { verifyToken } from "@/utils/verifyToken";
 import { AddressType, UserType } from "@/types/user.type";
 import { CartType } from "@/types/cart.type";
@@ -55,8 +55,6 @@ export async function POST(request: NextRequest) {
     })
   );
 
-  console.log(item_details);
-
   const params = {
     transaction_details: {
       order_id: genereteOrderId,
@@ -81,7 +79,7 @@ export async function POST(request: NextRequest) {
 
   // Update data transaction
   delete payload.user.address.isMain;
-  const user: UserType = await getDataById("users", decoded.id);
+  // const user: UserType = await getDataById("users", decoded.id);
   const newTransaction = {
     ...payload.transaction,
     orderId: genereteOrderId,
@@ -91,13 +89,11 @@ export async function POST(request: NextRequest) {
     status: "pending",
   };
 
-  let data: any;
-  if (user.transaction) {
-    data = { transaction: [...user.transaction, newTransaction] };
-  } else {
-    data = { transaction: [newTransaction] };
-  }
-  data.cart = [];
+  const data = {
+    transaction: await arrayUnion(newTransaction),
+    cart: [],
+  };
+
   const res = await updateData("users", decoded.id, data);
   if (!res) {
     return errorMessage("Failed to update data", 400);
@@ -114,16 +110,19 @@ export async function PUT(request: NextRequest) {
 
   const transactionDetail = await getTransaction(order_id || "");
   const user: UserType = await getDataById("users", decoded.id);
-  const transaction = user.transaction?.map((data) => {
-    if (data.orderId === order_id) {
-      return {
-        ...data,
-        status: transactionDetail.transaction_status,
-      };
-    }
-    return data;
-  });
-  const data = { transaction };
+  const transactionIdx = user.transaction?.findIndex(
+    (item) => item.orderId === order_id
+  );
+  console.log(user.transaction);
+  console.log({ transactionIdx });
+  if (!user.transaction || transactionIdx == -1) {
+    return errorMessage("Transaction Not Found", 404);
+  }
+
+  user.transaction[transactionIdx || 0].status =
+    transactionDetail.transaction_status;
+
+  const data = { transaction: user.transaction };
   const res = await updateData("users", decoded.id, data);
   if (res) return successMessage("Success", 200, transactionDetail);
   return errorMessage("Failed", 400);

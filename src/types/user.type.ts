@@ -13,7 +13,7 @@ export type TransactionType = {
   address: AddressType;
   items: CartType[];
   redirect_url: string;
-  status: string;
+  status: "settlement" | "pending";
   token: string;
   total: number;
 };

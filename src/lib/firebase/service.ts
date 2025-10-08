@@ -1,5 +1,6 @@
 import { User } from "next-auth";
 import { bucket, firestoreAdmin } from "./init";
+import admin from "firebase-admin";
 
 export async function getDataByEmail(email: string) {
   return await firestoreAdmin
@@ -120,3 +121,26 @@ export async function deleteFile(pathName: string) {
     return false;
   }
 }
+
+export async function arrayUnion(values: any) {
+  return admin.firestore.FieldValue.arrayUnion(values);
+}
+
+// export async function updateArray(
+//   collectionName: string,
+//   id: string,
+//   field: string,
+//   values: any
+// ) {
+//   try {
+//     const ref = firestoreAdmin.collection(collectionName).doc(id);
+//     await ref.update({
+//       [field]: admin.firestore.FieldValue.arrayUnion(values),
+//     });
+//     console.log("ok");
+//     console.log(admin.firestore.FieldValue.arrayUnion(values));
+//     return true;
+//   } catch {
+//     return false;
+//   }
+// }
