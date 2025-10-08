@@ -1,7 +1,7 @@
 "use client";
 
 import Button from "@/components/Elements/Button";
-import Modal from "@/components/Fragments/Modal";
+import Modal from "@/components/Fragments/Modal/Modal";
 import React, {
   type Dispatch,
   type FormEvent,

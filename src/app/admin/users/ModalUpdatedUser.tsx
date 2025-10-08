@@ -1,6 +1,6 @@
 import Button from "@/components/Elements/Button";
 import Icon from "@/components/Elements/Icon";
-import Modal from "@/components/Fragments/Modal";
+import Modal from "@/components/Fragments/Modal/Modal";
 import InputField from "@/components/Elements/Input/InputField";
 import { RoleType, type User } from "next-auth";
 import Select from "@/components/Elements/Input/Select";

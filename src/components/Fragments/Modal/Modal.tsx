@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import Icon from "../Elements/Icon";
+import Icon from "../../Elements/Icon";
 
 const Modal = ({
   children,

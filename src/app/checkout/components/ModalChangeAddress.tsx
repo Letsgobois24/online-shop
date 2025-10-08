@@ -1,4 +1,4 @@
-import Modal from "@/components/Fragments/Modal";
+import Modal from "@/components/Fragments/Modal/Modal";
 import {
   type Dispatch,
   FormEvent,
@@ -22,8 +22,8 @@ export default function ModalChangeAddress({
   setProfile,
   setModalChangeAddress,
 }: {
-  selectedAddress: number;
-  setSelectedAddress: Dispatch<SetStateAction<number>>;
+  selectedAddress: number | null;
+  setSelectedAddress: Dispatch<SetStateAction<number | null>>;
   profile: UserType;
   setProfile: Dispatch<SetStateAction<UserType | null>>;
   setModalChangeAddress: Dispatch<SetStateAction<boolean>>;
@@ -32,7 +32,7 @@ export default function ModalChangeAddress({
   const [isLoading, setIsLoading] = useState(false);
   const [isAddNew, setIsAddNew] = useState(false);
   const [selectedEdit, setSelectedEdit] = useState<number | null>(null);
-  const address = profile.address;
+  const address = profile.address ?? [];
 
   const handleDeleteCart = async (
     e: MouseEvent<HTMLButtonElement>,
@@ -87,7 +87,7 @@ export default function ModalChangeAddress({
 
     const form = e.currentTarget;
     const formData = new FormData(form);
-
+    console.log({ address });
     const newAddress: AddressType[] = [
       ...address,
       {
@@ -105,7 +105,9 @@ export default function ModalChangeAddress({
     try {
       await userServices.updateProfile(data);
       setProfile({ ...profile, address: newAddress });
-      selectedAddress == -1 && setSelectedAddress(0);
+      if (!selectedAddress || selectedAddress == -1) {
+        setSelectedAddress(0);
+      }
       setIsAddNew(false);
       showToaster("success", "Success add address");
     } catch {

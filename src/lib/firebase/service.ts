@@ -21,7 +21,7 @@ export async function addData(
   return { id: result.id, ...data };
 }
 
-export async function getAllData(collectionName: string) {
+export async function getAllData(collectionName: string): Promise<any[]> {
   const snapshot = await firestoreAdmin.collection(collectionName).get();
 
   const data = snapshot.docs.map((doc) => ({

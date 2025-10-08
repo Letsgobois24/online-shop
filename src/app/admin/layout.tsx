@@ -18,6 +18,11 @@ const listSidebarItem: ListsType = [
     url: "/admin/users",
     icon: "users",
   },
+  {
+    title: "Orders",
+    url: "/admin/orders",
+    icon: "order",
+  },
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {

@@ -3,7 +3,7 @@ import { AddressType } from "@/types/user.type";
 import React from "react";
 
 type PropsType = {
-  address?: AddressType;
+  address?: AddressType | null;
   setModalChangeAddress: React.Dispatch<React.SetStateAction<boolean>>;
 };
 

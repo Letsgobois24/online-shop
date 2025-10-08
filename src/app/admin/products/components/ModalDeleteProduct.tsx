@@ -1,6 +1,6 @@
 import Button from "@/components/Elements/Button";
 import Icon from "@/components/Elements/Icon";
-import Modal from "@/components/Fragments/Modal";
+import Modal from "@/components/Fragments/Modal/Modal";
 import {
   type Dispatch,
   type FormEvent,

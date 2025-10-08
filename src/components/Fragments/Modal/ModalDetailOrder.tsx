@@ -1,6 +1,6 @@
 import Button from "@/components/Elements/Button";
 import Icon from "@/components/Elements/Icon";
-import Modal from "@/components/Fragments/Modal";
+import Modal from "@/components/Fragments/Modal/Modal";
 import productsServices from "@/services/products/services";
 import { CartType } from "@/types/cart.type";
 import { ProductType } from "@/types/product.type";

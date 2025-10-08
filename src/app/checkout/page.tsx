@@ -28,7 +28,7 @@ export default function CheckoutPage() {
   const [productCart, setProductCart] = useState<
     (CartType & ProductType)[] | []
   >([]);
-  const [selectedAddress, setSelectedAddress] = useState(0);
+  const [selectedAddress, setSelectedAddress] = useState<number | null>(null);
   const [modalChangeAddress, setModalChangeAddress] = useState(false);
 
   const { data: session } = useSession();
@@ -51,6 +51,7 @@ export default function CheckoutPage() {
       const res = await userServices.getProfile();
       const profile: UserType = res.data.data;
       setProfile(profile);
+      if (!profile.address) return;
       const mainAddressIdx = profile.address.findIndex(
         (address) => address.isMain === true
       );
@@ -61,7 +62,10 @@ export default function CheckoutPage() {
   }, [session]);
 
   const cart = profile?.cart || [];
-  const address = profile?.address[selectedAddress];
+  const address =
+    selectedAddress != null ? profile?.address[selectedAddress] : null;
+  console.log({ address });
+  console.log({ selectedAddress });
 
   useEffect(() => {
     if (cart.length > 0) {
@@ -87,6 +91,12 @@ export default function CheckoutPage() {
   }, [cart]);
 
   const handleCheckout = async () => {
+    console.log({ selectedAddress });
+    if (selectedAddress == null) {
+      showToaster("warning", "Please, add address first");
+      return;
+    }
+
     if (!profile) {
       showToaster("warning", "Please wait a minute");
       return;
