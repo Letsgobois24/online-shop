@@ -71,8 +71,10 @@ export async function POST(request: NextRequest) {
       },
     },
     item_details,
+    callbacks: { finish: `${process.env.NEXT_PUBLIC_API_URL}/transaction` },
   };
   const transaction = await createTransaction(params);
+  console.log({ transaction });
   if (!transaction) {
     return errorMessage("Failed to generate token", 400);
   }
@@ -113,7 +115,6 @@ export async function PUT(request: NextRequest) {
   const transactionIdx = user.transaction?.findIndex(
     (item) => item.orderId === order_id
   );
-  console.log(user.transaction);
   console.log({ transactionIdx });
   if (!user.transaction || transactionIdx == -1) {
     return errorMessage("Transaction Not Found", 404);
@@ -122,7 +123,11 @@ export async function PUT(request: NextRequest) {
   user.transaction[transactionIdx || 0].status =
     transactionDetail.transaction_status;
 
-  const data = { transaction: user.transaction };
+  const data = {
+    transaction: user.transaction,
+  };
+  console.log({ transactionDetail });
+
   const res = await updateData("users", decoded.id, data);
   if (res) return successMessage("Success", 200, transactionDetail);
   return errorMessage("Failed", 400);

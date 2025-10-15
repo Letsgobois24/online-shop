@@ -69,7 +69,7 @@ export default function DetailProduct({ params }: { params: any }) {
     if (status == "authenticated") {
       const getCart = async () => {
         const res = await userServices.getCart();
-        setCart(res.data.data);
+        setCart(res.data.data ?? []);
       };
       getCart();
     }

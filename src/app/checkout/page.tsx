@@ -64,8 +64,6 @@ export default function CheckoutPage() {
   const cart = profile?.cart || [];
   const address =
     selectedAddress != null ? profile?.address[selectedAddress] : null;
-  console.log({ address });
-  console.log({ selectedAddress });
 
   useEffect(() => {
     if (cart.length > 0) {

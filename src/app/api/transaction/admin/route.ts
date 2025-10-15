@@ -1,6 +1,5 @@
 import { type NextRequest } from "next/server";
 import { getAllData } from "@/lib/firebase/service";
-import { User } from "next-auth";
 import { verifyToken } from "@/utils/verifyToken";
 import { errorMessage, successMessage } from "@/utils/response";
 import { TransactionType, UserType } from "@/types/user.type";

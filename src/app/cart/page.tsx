@@ -139,6 +139,7 @@ export default function CartPage() {
                           Quantity
                         </label>
                         <input
+                          min="0"
                           type="number"
                           id={`qty-${item.id}-${item.size}`}
                           name="qty"
