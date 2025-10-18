@@ -37,14 +37,15 @@ export default function ProductsPage() {
   }, []);
 
   return (
-    <div className="h-[88vh]">
+    <div className="h-main">
       <div className="flex">
         <ProductSidebar
           filter={filter}
           setFilter={setFilter}
           isSidebar={isSidebar}
+          setIsSidebar={setIsSidebar}
         />
-        <main className={`${isSidebar ? "ml-64" : ""} w-full p-6`}>
+        <main className={`${isSidebar && "sm:ml-64"} w-full p-6`}>
           <div className="flex justify-between">
             <Title>Products Page</Title>
             <Button

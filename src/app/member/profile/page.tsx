@@ -108,7 +108,6 @@ export default function ProfilePage() {
 
   return (
     <>
-      <Title>Profile Page</Title>
       <div className="grid xl:grid-cols-3 md:grid-cols-2 gap-5">
         <div className="flex flex-col items-center justify-center border rounded-xl border-slate-400 shadow-lg p-6">
           <Title size="medium" className="flex-1">

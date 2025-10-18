@@ -2,7 +2,6 @@
 
 import Button from "@/components/Elements/Button";
 import Icon from "@/components/Elements/Icon";
-import Title from "@/components/Elements/Title";
 import productsServices from "@/services/products/services";
 import { useEffect, useState } from "react";
 import { ProductType } from "@/types/product.type";
@@ -31,22 +30,19 @@ export default function AdminproductsPage() {
 
   return (
     <>
-      <div className="w-full">
-        <Title>Products Management</Title>
-        <div className="flex justify-end">
-          <Button padding="medium" onClick={() => setModalAddProduct(true)}>
-            <span className="mr-1.5 text-2xl">+</span>Add Product
-          </Button>
-        </div>
-        <div className="relative overflow-x-auto mt-6">
-          {Object.keys(products).length > 0 ? (
-            <ProductsTable products={products} setUpdateData={setUpdateData} />
-          ) : (
-            <div className="w-full flex justify-center">
-              <Icon icon="loading" size={24} />
-            </div>
-          )}
-        </div>
+      <div className="flex justify-end">
+        <Button padding="medium" onClick={() => setModalAddProduct(true)}>
+          <span className="mr-1.5 text-2xl">+</span>Add Product
+        </Button>
+      </div>
+      <div className="relative overflow-x-auto mt-6">
+        {Object.keys(products).length > 0 ? (
+          <ProductsTable products={products} setUpdateData={setUpdateData} />
+        ) : (
+          <div className="w-full flex justify-center">
+            <Icon icon="loading" size={24} />
+          </div>
+        )}
       </div>
       {modalAddProduct && (
         <ModalAddProduct

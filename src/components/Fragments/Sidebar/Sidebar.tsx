@@ -1,32 +1,38 @@
 "use client";
 
 import { signOut } from "next-auth/react";
-import Button from "../Elements/Button";
-import Icon from "../Elements/Icon";
-import type { IconName } from "../Elements/Icon";
+import Button from "../../Elements/Button";
+import Icon from "../../Elements/Icon";
+import type { IconName } from "../../Elements/Icon";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import SidebarTemplate from "./Template";
+import { Dispatch, SetStateAction } from "react";
 
 export type ListsType = Array<{
   title: string;
   url: string;
   icon: IconName;
+  page: string;
 }>;
 
-const Sidebar = ({
-  lists,
-  title = "",
-}: {
+type PropsType = {
   lists: ListsType;
   title: string;
-}) => {
+  isSidebar: boolean;
+  setIsSidebar: Dispatch<SetStateAction<boolean>>;
+};
+
+const Sidebar = ({ lists, title = "", isSidebar, setIsSidebar }: PropsType) => {
   const pathname = usePathname();
   const segments = pathname.split("/");
 
   return (
-    <aside className="bg-blue-900 w-64 text-white font-sans h-screen fixed flex-col p-6 hidden sm:flex">
-      <h2 className="text-center font-semibold text-2xl pb-5">{title}</h2>
-      <div className="flex flex-col justify-between h-full">
+    <SidebarTemplate isSidebar={isSidebar} setIsSidebar={setIsSidebar}>
+      <h2 className="font-semibold text-2xl h-nav flex justify-center items-center">
+        {title}
+      </h2>
+      <div className="flex flex-col justify-between h-main">
         <ul className="flex flex-col space-y-2">
           {lists.map((list, index) => {
             const listSegment = list.url.split("/");
@@ -56,12 +62,12 @@ const Sidebar = ({
           type="button"
           variant="primary"
           padding="medium"
-          className="mx-auto font-semibold"
+          className="mx-auto font-semibold mb-8"
         >
           Sign Out
         </Button>
       </div>
-    </aside>
+    </SidebarTemplate>
   );
 };
 

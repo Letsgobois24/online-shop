@@ -23,6 +23,9 @@
       width: 0%;
     }
   }
+  --spacing-nav: 12vh;
+  --spacing-main: 88vh;
+  --spacing-side: 16rem;
 }
 
 @layer utilities {

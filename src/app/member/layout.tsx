@@ -1,32 +1,32 @@
-import type { ReactNode } from "react";
-import Sidebar from "@/components/Fragments/Sidebar";
-import { type ListsType } from "@/components/Fragments/Sidebar";
+import { type ReactNode } from "react";
+import { type ListsType } from "@/components/Fragments/Sidebar/Sidebar";
+import ManagementLayout from "@/components/Layout/ManagementLayout";
 
 const listSidebarItem: ListsType = [
   {
     title: "Dashboard",
     url: "/member",
     icon: "dashboard",
+    page: "Member Dashboard",
   },
   {
     title: "Orders",
     url: "/member/orders",
     icon: "order",
+    page: "Orders Page",
   },
   {
     title: "Profile",
     url: "/member/profile",
     icon: "user",
+    page: "User Profile",
   },
 ];
 
 export default function MemberLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex">
-      <Sidebar lists={listSidebarItem} title="Member Panel" />
-      <div className="py-8 px-10 w-screen h-screen ml-0 sm:ml-64">
-        {children}
-      </div>
-    </div>
+    <ManagementLayout listSidebarItem={listSidebarItem} title="Member">
+      {children}
+    </ManagementLayout>
   );
 }
