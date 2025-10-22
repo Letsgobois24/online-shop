@@ -1,6 +1,6 @@
 import Logo from "@/components/Elements/Logo";
 import SidebarTemplate from "@/components/Fragments/Sidebar/Template";
-import { Dispatch, SetStateAction, useEffect, useRef } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 type FilterType = {
   gender: {

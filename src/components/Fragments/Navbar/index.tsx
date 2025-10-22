@@ -1,3 +1,5 @@
+"use client";
+
 import { signIn, useSession } from "next-auth/react";
 import Button from "../../Elements/Button";
 import Image from "next/image";
@@ -7,7 +9,7 @@ import Icon from "../../Elements/Icon";
 import { useState } from "react";
 import Logo from "../../Elements/Logo";
 import DropdownUser from "./DropdownUser";
-import { Menu, DropdownMenu } from "./Menu";
+import Menu from "./Menu";
 
 const Navbar = () => {
   const { data: session, status } = useSession();
@@ -19,7 +21,7 @@ const Navbar = () => {
     <nav className="z-10 bg-blue-900 text-white flex justify-between items-center px-3 sm:px-6 h-nav">
       <Logo />
       {/* List Menu */}
-      <Menu />
+      <Menu.MainMenu />
       <div className="relative text-gray-900 flex space-x-3 sm:space-x-4 items-center">
         <>
           {status === "authenticated" && (
@@ -63,7 +65,10 @@ const Navbar = () => {
                     ></Icon>
                   </div>
                   {/* Dropdown User */}
-                  <DropdownUser dropDownUser={dropDownUser} />
+                  <DropdownUser
+                    dropDownUser={dropDownUser}
+                    setDropDownUser={setDropDownUser}
+                  />
                 </div>
               </div>
             </>
@@ -89,7 +94,10 @@ const Navbar = () => {
         >
           <Icon icon="hamburger" size={20} className="text-white" />
           {/* Dropdown Menu */}
-          <DropdownMenu dropDownMenu={dropDownMenu} />
+          <Menu.DropdownMenu
+            dropDownMenu={dropDownMenu}
+            setDropDownMenu={setDropDownMenu}
+          />
         </button>
       </div>
     </nav>

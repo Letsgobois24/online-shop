@@ -123,8 +123,8 @@ export default function CheckoutPage() {
         strategy="lazyOnload"
       />
 
-      <div className="flex space-x-12 mx-auto max-w-3xl w-full">
-        <section className="flex-2">
+      <div className="flex flex-col sm:flex-row gap-12 mx-auto max-w-3xl w-full">
+        <section className="flex-2 w-full">
           <Title size="medium">Checkout</Title>
           <ChangeAddress
             address={address}

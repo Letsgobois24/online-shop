@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Dropdown from "./Dropdown";
+import { Dispatch, SetStateAction } from "react";
 
 const NavItem = [
   {
@@ -12,15 +14,16 @@ const NavItem = [
   },
 ];
 
-export function DropdownMenu({ dropDownMenu }: { dropDownMenu: boolean }) {
+type PropsType = {
+  dropDownMenu: boolean;
+  setDropDownMenu: Dispatch<SetStateAction<boolean>>;
+};
+
+function DropdownMenu({ dropDownMenu, setDropDownMenu }: PropsType) {
   const pathname = usePathname();
 
   return (
-    <div
-      className={`${
-        dropDownMenu ? "" : "hidden"
-      } absolute bg-gray-50 right-2 mt-5 rounded-sm border border-gray-300`}
-    >
+    <Dropdown dropDown={dropDownMenu} setDropDown={setDropDownMenu}>
       <ul>
         {NavItem.map((item, index) => (
           <li
@@ -38,11 +41,11 @@ export function DropdownMenu({ dropDownMenu }: { dropDownMenu: boolean }) {
           </li>
         ))}
       </ul>
-    </div>
+    </Dropdown>
   );
 }
 
-export function Menu() {
+function MainMenu() {
   const pathname = usePathname();
 
   return (
@@ -64,3 +67,5 @@ export function Menu() {
     </ul>
   );
 }
+
+export default { DropdownMenu, MainMenu };

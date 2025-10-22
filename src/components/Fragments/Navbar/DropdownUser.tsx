@@ -1,18 +1,19 @@
 import { signOut } from "next-auth/react";
 import Link from "next/link";
+import { Dispatch, SetStateAction } from "react";
+import Dropdown from "./Dropdown";
 
 type PropsType = {
   dropDownUser: boolean;
+  setDropDownUser: Dispatch<SetStateAction<boolean>>;
 };
 
-export default function DropdownUser({ dropDownUser }: PropsType) {
+export default function DropdownUser({
+  dropDownUser,
+  setDropDownUser,
+}: PropsType) {
   return (
-    <div
-      className={`${
-        dropDownUser ? "" : "hidden"
-      } absolute bg-gray-50 right-2 mt-5 rounded-sm border border-gray-300`}
-    >
-      {/* Dropdown User */}
+    <Dropdown dropDown={dropDownUser} setDropDown={setDropDownUser}>
       <ul>
         <li className="border-b border-b-gray-300 h-10 w-26 hover:bg-gray-100">
           <Link
@@ -29,6 +30,6 @@ export default function DropdownUser({ dropDownUser }: PropsType) {
           Logout
         </li>
       </ul>
-    </div>
+    </Dropdown>
   );
 }
