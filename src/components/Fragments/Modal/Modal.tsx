@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import Icon from "../../Elements/Icon";
+import useClickOutside from "@/utils/hooks/useClickOutside";
 
 const Modal = ({
   children,
@@ -11,17 +12,7 @@ const Modal = ({
   title?: string;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
-        onClose();
-      }
-    };
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [onClose]);
+  useClickOutside(onClose, ref);
 
   return (
     <div className="flex justify-center items-center fixed top-0 right-0 left-0 bottom-0 z-50 bg-black/50">

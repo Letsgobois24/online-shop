@@ -5,6 +5,13 @@ import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
 import Alert from "@/components/Elements/Alert";
 import Button from "@/components/Elements/Button";
+import formValidate from "./utils/FormValidation";
+import InputField from "@/components/Elements/Input/InputField";
+
+export type ErrorType = {
+  email?: string;
+  password?: string;
+};
 
 export default function SignInPages({
   searchParams,
@@ -14,6 +21,7 @@ export default function SignInPages({
   const params = React.use(searchParams);
   const { push } = useRouter();
   const [error, setError] = useState("");
+  const [validate, setValidate] = useState<ErrorType>({});
   const [isLoading, setIsLoading] = useState(false);
   const callbackUrl = params.callbackUrl || "/";
 
@@ -22,11 +30,22 @@ export default function SignInPages({
     setIsLoading(true);
 
     const form = e.target as HTMLFormElement;
+    const data = {
+      email: form.email.value as string,
+      password: form.password.value as string,
+    };
+
+    const validation = formValidate(data);
+    if (validation) {
+      setValidate(validation);
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const res = await signIn("credentials", {
+        ...data,
         redirect: false,
-        email: form.email.value,
-        password: form.password.value,
         callbackUrl,
       });
       if (!res?.error) {
@@ -35,49 +54,32 @@ export default function SignInPages({
         setError("Email or password is incorrect");
         form.password.value = "";
       }
-      setIsLoading(false);
     } catch (err) {
-      console.log({ err });
+      console.log("Error: ", err);
       setError("Login failed! Please try again later");
     }
+    setIsLoading(false);
+    setValidate({});
   };
 
   return (
     <>
       {error && <Alert>{error}</Alert>}
       <form className="space-y-4" onSubmit={(e) => handleSubmit(e)}>
-        <div>
-          <label
-            htmlFor="email"
-            className="block mb-2 text-sm font-medium text-gray-900"
-          >
-            Email
-          </label>
-          <input
-            type="email"
-            name="email"
-            id="email"
-            className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="name@company.com"
-            required
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="password"
-            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >
-            Password
-          </label>
-          <input
-            type="password"
-            name="password"
-            id="password"
-            placeholder="••••••••"
-            className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            required
-          />
-        </div>
+        <InputField
+          label="Email"
+          name="email"
+          placeholder="name@company.com"
+          type="text"
+          error={validate.email}
+        />
+        <InputField
+          type="password"
+          label="Password"
+          name="password"
+          placeholder="••••••••"
+          error={validate.password}
+        />
 
         <Button type="submit" isLoading={isLoading} className="w-full">
           Sign In

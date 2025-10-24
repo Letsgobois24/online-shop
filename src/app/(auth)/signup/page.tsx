@@ -6,10 +6,20 @@ import { FormEvent, useState } from "react";
 import Alert from "@/components/Elements/Alert";
 import Button from "@/components/Elements/Button";
 import authServices from "@/services/auth/auth";
+import formValidate from "./utils/FormValidation";
+
+export type ErrorType = {
+  fullname?: string;
+  email?: string;
+  phone?: string;
+  password?: string;
+  "confirm-password"?: string;
+};
 
 export default function SignUpPages() {
   const { push } = useRouter();
   const [error, setError] = useState("");
+  const [validate, setValidate] = useState<ErrorType>({});
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -18,11 +28,22 @@ export default function SignUpPages() {
 
     const form = e.target as HTMLFormElement;
     const data = {
-      fullname: form.fullname.value,
-      email: form.email.value,
-      phone: form.phone.value,
-      password: form.password.value,
+      fullname: form.fullname.value as string,
+      email: form.email.value as string,
+      phone: form.phone.value as string,
+      password: form.password.value as string,
+      "confirm-password": form["confirm-password"].value as string,
     };
+
+    const validation = formValidate(data);
+
+    if (validation) {
+      setValidate(validation);
+      setIsLoading(false);
+      return;
+    }
+
+    // Fetch Data
     try {
       const res = await authServices.registerAccount(data);
 
@@ -35,9 +56,9 @@ export default function SignUpPages() {
     } catch {
       setError("Register failed! Please try again later");
     }
+    setValidate({});
     setIsLoading(false);
   };
-
   return (
     <>
       {error && <Alert>{error}</Alert>}
@@ -47,33 +68,34 @@ export default function SignUpPages() {
           name="fullname"
           placeholder="Your fullname"
           type="text"
-          required={true}
+          error={validate.fullname}
         />
         <InputField
           label="Email"
           name="email"
           placeholder="name@company.com"
-          type="email"
-          required={true}
+          type="text"
+          error={validate.email}
         />
         <InputField
           label="Phone Number"
           name="phone"
           placeholder="Your phone number"
+          error={validate.phone}
         />
         <InputField
           type="password"
           label="Password"
           name="password"
           placeholder="••••••••"
-          required={true}
+          error={validate.password}
         />
         <InputField
           type="password"
           label="Confirm Password"
           name="confirm-password"
           placeholder="••••••••"
-          required={true}
+          error={validate["confirm-password"]}
         />
 
         <Button type="submit" isLoading={isLoading} className="w-full">

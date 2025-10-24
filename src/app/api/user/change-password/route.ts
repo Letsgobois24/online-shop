@@ -20,7 +20,7 @@ export async function PUT(request: NextRequest) {
       );
 
       if (!confirmPassword) {
-        return errorMessage("Wrong Password!", 401);
+        return errorMessage("Wrong old password!", 401);
       }
     }
 

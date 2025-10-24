@@ -11,19 +11,38 @@ import { useToaster } from "@/context/ToasterContext";
 import { User } from "next-auth";
 import { ChangePasswordType } from "@/services/user/service.type";
 import InputFile from "@/components/Elements/Input/InputFile";
+import passwordValidate from "./utils/passwordValidate";
+import profileValidate from "./utils/profileValidate";
 
 type ImageInfo = File | null;
+export type ProfileErrorType = {
+  fullname?: string;
+  phone?: string;
+};
+export type PasswordErrorType = {
+  oldPassword?: string;
+  newPassword?: string;
+};
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<User | null>(null);
+  const [validateProfile, setValidateProfile] = useState<ProfileErrorType>({});
+  const [validatePassword, setValidatePassword] = useState<PasswordErrorType>(
+    {}
+  );
   const [changeImage, setChangeImage] = useState<ImageInfo>(null);
   const [isLoading, setIsLoading] = useState(false);
   const session = useSession();
   const { showToaster } = useToaster();
 
   const handleUploadProfile = async (e: FormEvent<HTMLFormElement>) => {
-    setIsLoading(true);
     e.preventDefault();
+    if (!profile) {
+      showToaster("warning", "Please wait a moment");
+      return;
+    }
+
+    setIsLoading(true);
     const formData = new FormData(e.currentTarget);
     const file = formData.get("upload-image") as File;
 
@@ -50,6 +69,11 @@ export default function ProfilePage() {
 
   const handleChangeProfile = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // Wail till profile is fullfilled
+    if (!profile) {
+      showToaster("warning", "Please wait a moment");
+      return;
+    }
     setIsLoading(true);
 
     const form = e.target as HTMLFormElement;
@@ -58,44 +82,74 @@ export default function ProfilePage() {
       phone: form.phone.value as string,
     };
 
-    const res = await userServices.updateProfile(data);
-    if (res.status == 200) {
-      setProfile({
-        ...profile,
-        ...res.data.data,
-      });
+    // Form Change Profile Validation
+    const validation = profileValidate(data);
+    if (validation) {
+      setValidateProfile(validation);
+      setIsLoading(false);
+      return;
     }
-    showToaster(res.data.success ? "success" : "danger", res.data.message);
+
+    // Fetching to API
+    try {
+      const res = await userServices.updateProfile(data);
+      if (res.status == 200) {
+        setProfile({
+          ...profile,
+          ...res.data.data,
+        });
+      }
+      showToaster("success", res.data.message);
+    } catch (err: any) {
+      showToaster("danger", err.response.data.message);
+    }
     setIsLoading(false);
   };
 
   const handlaChangePassword = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!profile) {
+      showToaster("warning", "Please wait a moment");
+      return;
+    }
+
     setIsLoading(true);
 
     const form = e.target as HTMLFormElement;
+
     const data: ChangePasswordType = {
-      newPassword: (form["new-password"].value as string) || "",
+      newPassword: form["new-password"].value as string,
     };
 
-    if (profile?.password) {
-      data.encryptedPassword = profile?.password || "";
-      data.oldPassword = (form["old-password"].value as string) || "";
+    if (profile.password) {
+      data.encryptedPassword = profile.password || "";
+      data.oldPassword = form["old-password"].value as string;
     }
-
-    const res = await userServices.changePassword(data);
-    const newPassword = res.data.password;
-    if (res.status == 200) {
-      setProfile({
-        ...profile,
-        password: newPassword,
-      });
-      await session.update({ password: newPassword });
+    const validation = passwordValidate(data);
+    if (validation) {
+      setValidatePassword(validation);
+      setIsLoading(false);
+      return;
     }
-    form.reset();
-    showToaster(res.data.success ? "success" : "danger", res.data.message);
+    setValidatePassword({});
+    try {
+      const res = await userServices.changePassword(data);
+      const newPassword = res.data.password;
+      if (res.status == 200) {
+        setProfile({
+          ...profile,
+          password: newPassword,
+        });
+        await session.update({ password: newPassword });
+      }
+      form.reset();
+      showToaster("success", res.data.message);
+    } catch (err: any) {
+      showToaster("danger", err.response.data.message);
+    }
     setIsLoading(false);
   };
+
   useEffect(() => {
     if (session.status == "authenticated") {
       const getProfile = async () => {
@@ -153,8 +207,8 @@ export default function ProfilePage() {
               label="Fullname"
               name="fullname"
               type="text"
-              required={true}
               defaultValue={profile?.fullname || ""}
+              error={validateProfile.fullname}
             />
             <InputField
               label="Phone Number"
@@ -163,13 +217,13 @@ export default function ProfilePage() {
               placeholder="Your phone number"
               defaultValue={profile?.phone || ""}
               className="no-spinner"
+              error={validateProfile.phone}
             />
             <InputField
               label="Email"
               name="email"
               placeholder="name@company.com"
               type="email"
-              required={true}
               defaultValue={profile?.email || ""}
               disabled
             />
@@ -199,7 +253,7 @@ export default function ProfilePage() {
                 name="old-password"
                 placeholder="Your last password"
                 type="password"
-                required
+                error={validatePassword.oldPassword}
               />
             )}
 
@@ -208,7 +262,7 @@ export default function ProfilePage() {
               name="new-password"
               placeholder="Your new password"
               type="password"
-              required
+              error={validatePassword.newPassword}
             />
             <Button
               type="submit"

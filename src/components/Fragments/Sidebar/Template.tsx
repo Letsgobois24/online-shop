@@ -10,17 +10,29 @@ const SidebarTemplate = ({ isSidebar, setIsSidebar, children }: PropsType) => {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (window.innerWidth > 640) return;
+    // Click outside sidebar
     const handleClickOutside = (event: MouseEvent) => {
       if (ref.current && !ref.current.contains(event.target as Node)) {
         setIsSidebar(false);
       }
     };
 
-    document.addEventListener("click", handleClickOutside);
+    const handleResize = () => {
+      if (window.innerWidth > 640) {
+        document.removeEventListener("click", handleClickOutside);
+      } else {
+        document.addEventListener("click", handleClickOutside);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+
+    if (window.innerWidth <= 640) {
+      document.addEventListener("click", handleClickOutside);
+    }
 
     return () => {
       document.removeEventListener("click", handleClickOutside);
+      window.removeEventListener("resize", handleResize);
     };
   }, [isSidebar]);
 

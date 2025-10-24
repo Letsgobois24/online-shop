@@ -10,6 +10,8 @@ import ProductSidebar from "./components/ProductSidebar";
 import Button from "@/components/Elements/Button";
 
 export default function ProductsPage() {
+  const [keyword, setKeyword] = useState("");
+  const [debouncedKeyword, setDobouncedKeyword] = useState("");
   const [products, setProducts] = useState<ProductType[]>([]);
   const [filter, setFilter] = useState({
     gender: { men: true, women: true },
@@ -18,13 +20,25 @@ export default function ProductsPage() {
 
   // Filter Product
   let filteredProducts;
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDobouncedKeyword(keyword);
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [keyword]);
+
   if (products.length > 0) {
     filteredProducts = products.filter((product) => {
       const { men, women } = filter.gender;
-      if (product.category === "men" && men) return true;
-      if (product.category === "women" && women) return true;
-
-      return false;
+      if (product.category === "men" && !men) return false;
+      if (product.category === "women" && !women) return false;
+      if (!product.name.toLowerCase().includes(debouncedKeyword.toLowerCase()))
+        return false;
+      return true;
     });
   }
 
@@ -44,6 +58,8 @@ export default function ProductsPage() {
           setFilter={setFilter}
           isSidebar={isSidebar}
           setIsSidebar={setIsSidebar}
+          keyword={keyword}
+          setKeyword={setKeyword}
         />
         <main className={`${isSidebar && "sm:ml-64"} w-full p-6`}>
           <div className="flex justify-between">
