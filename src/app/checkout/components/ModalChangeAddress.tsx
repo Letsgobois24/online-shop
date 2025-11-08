@@ -87,7 +87,6 @@ export default function ModalChangeAddress({
 
     const form = e.currentTarget;
     const formData = new FormData(form);
-    console.log({ address });
     const newAddress: AddressType[] = [
       ...address,
       {

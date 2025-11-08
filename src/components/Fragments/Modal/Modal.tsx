@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useImperativeHandle, useRef } from "react";
 import Icon from "../../Elements/Icon";
 import useClickOutside from "@/utils/hooks/useClickOutside";
 

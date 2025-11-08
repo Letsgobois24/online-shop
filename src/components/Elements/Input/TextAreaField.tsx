@@ -10,6 +10,7 @@ interface TextAreaFieldProps {
   defaultValue?: string | number;
   className?: string;
   disabled?: boolean;
+  error?: string;
 }
 
 const TextAreaField: React.FC<TextAreaFieldProps> = ({
@@ -20,6 +21,7 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
   defaultValue = "",
   className = "",
   disabled = false,
+  error,
 }) => {
   return (
     <div className={className}>
@@ -33,6 +35,7 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
         defaultValue={defaultValue}
         disabled={disabled}
       />
+      <p className="h-2 mt-1 ml-1 text-xs text-red-600">{error}</p>
     </div>
   );
 };

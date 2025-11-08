@@ -1,4 +1,4 @@
-import validation from "@/utils/validation";
+import validation from "@/utils/validation/profileValidation";
 import { ErrorType } from "../page";
 
 type DataType = {

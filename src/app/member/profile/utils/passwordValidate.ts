@@ -1,5 +1,5 @@
 import { PasswordErrorType } from "../page";
-import validation from "@/utils/validation";
+import validation from "@/utils/validation/profileValidation";
 
 type DataType = {
   oldPassword?: string;

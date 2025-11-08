@@ -1,5 +1,5 @@
 import { ProfileErrorType } from "../page";
-import validation from "@/utils/validation";
+import validation from "@/utils/validation/profileValidation";
 
 type DataType = {
   fullname: string;

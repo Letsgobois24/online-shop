@@ -13,7 +13,7 @@ export type ListsType = Array<{
   title: string;
   url: string;
   icon: IconName;
-  page: string;
+  page?: string;
 }>;
 
 type PropsType = {
@@ -57,15 +57,29 @@ const Sidebar = ({ lists, title = "", isSidebar, setIsSidebar }: PropsType) => {
             );
           })}
         </ul>
-        <Button
-          onClick={() => signOut()}
-          type="button"
-          variant="primary"
-          padding="medium"
-          className="mx-auto font-semibold mb-8"
-        >
-          Sign Out
-        </Button>
+        <div className="flex">
+          <Button
+            onClick={() => signOut()}
+            type="button"
+            variant="primary"
+            padding="medium"
+            className="mx-auto font-semibold mb-8"
+          >
+            Sign Out
+          </Button>
+          <div
+            className={
+              "cursor-pointer rounded-full w-9 h-9 border-b-2 bg-blue-600 hover:bg-blue-700 hover:-translate-y-1 transition duration-150"
+            }
+          >
+            <Link
+              href="/"
+              className="w-full h-full flex justify-center items-center"
+            >
+              <Icon icon="home" size={20} />
+            </Link>
+          </div>
+        </div>
       </div>
     </SidebarTemplate>
   );

@@ -7,6 +7,7 @@ type PropTypes = {
   changeFile: ImageInfo;
   setChangeFile: Dispatch<SetStateAction<ImageInfo>>;
   required?: boolean;
+  error?: string;
 };
 
 const InputFile = ({
@@ -14,11 +15,14 @@ const InputFile = ({
   changeFile,
   setChangeFile,
   required = true,
+  error,
 }: // handleChangeFile,
 PropTypes) => {
   const handleChangeFile = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.currentTarget.files?.[0];
-    if (!file) return;
+    if (!file) {
+      return;
+    }
     setChangeFile(file);
   };
 
@@ -49,6 +53,7 @@ PropTypes) => {
           onChange={(e) => handleChangeFile(e)}
           required={required}
         ></input>
+        <p className="h-2 mt-1 ml-1 text-xs text-red-600">{error}</p>
       </label>
     </div>
   );

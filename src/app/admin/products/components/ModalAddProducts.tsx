@@ -6,6 +6,7 @@ import React, {
   type Dispatch,
   type FormEvent,
   type SetStateAction,
+  useRef,
   useState,
 } from "react";
 import { useToaster } from "@/context/ToasterContext";
@@ -17,6 +18,7 @@ import TextAreaField from "@/components/Elements/Input/TextAreaField";
 import Label from "@/components/Elements/Input/Label";
 import productsServices from "@/services/products/services";
 import Image from "next/image";
+import saveValidate, { type ErrorType } from "../utils/saveValidate";
 
 type PropTypes = {
   setModalAddProduct: Dispatch<SetStateAction<boolean>>;
@@ -32,6 +34,8 @@ export default function ModalAddProduct({
     { size: 0, qty: 0 },
   ]);
   const [changeImage, setChangeImage] = useState<File | null>(null);
+  const [validate, setValidate] = useState<ErrorType>();
+  const modalRef = useRef<HTMLDivElement>(null);
   const { showToaster } = useToaster();
 
   const handleAddStock = (i: number, stock: "qty" | "size", value: number) => {
@@ -45,16 +49,33 @@ export default function ModalAddProduct({
     setIsLoading(true);
 
     const formData = new FormData(e.currentTarget);
-    formData.append("stock", JSON.stringify(stockCount));
+    const filteredStock = stockCount.filter((stock) => stock.qty || stock.size);
+    formData.append("stock", JSON.stringify(filteredStock));
     formData.delete("size");
     formData.delete("qty");
+    const validation = saveValidate(formData);
+    if (validation) {
+      setValidate(validation);
+      setIsLoading(false);
 
+      // Scroll ke bagian paling atas modal
+      if (modalRef.current) {
+        modalRef.current.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      return;
+    }
+    setValidate({});
     // Add data and upload image
-    const res = await productsServices.addProduct(formData);
+    try {
+      const res = await productsServices.addProduct(formData);
 
+      showToaster("success", res.data.message);
+    } catch (err: any) {
+      showToaster("danger", err.response.data.message);
+    }
     setIsLoading(false);
     setUpdateData(true);
-    showToaster(res.data.success ? "success" : "danger", res.data.message);
   };
 
   return (
@@ -68,7 +89,7 @@ export default function ModalAddProduct({
               className="text-sm"
               type="text"
               placeholder="Insert product name"
-              required
+              error={validate?.name}
             />
           </div>
           <div className="col-span-2">
@@ -78,7 +99,7 @@ export default function ModalAddProduct({
               className="text-sm"
               type="number"
               placeholder="Insert price"
-              required
+              error={validate?.price}
             />
           </div>
           <div className="col-span-2 sm:col-span-1">
@@ -119,6 +140,8 @@ export default function ModalAddProduct({
               name="product-image"
               changeFile={changeImage}
               setChangeFile={setChangeImage}
+              required={false}
+              error={validate?.["product-image"]}
             />
           </div>
           <div className="col-span-2">
@@ -127,22 +150,23 @@ export default function ModalAddProduct({
               label="Description"
               className="text-sm h-24"
               placeholder="Insert description product"
+              error={validate?.description}
             />
           </div>
           <label className="col-span-2 font-semibold" htmlFor="stock">
             Stock
           </label>
-          {stockCount.map((item, i) => (
-            <React.Fragment key={i}>
+          {stockCount.map((item, idx) => (
+            <React.Fragment key={idx}>
               <div>
                 <InputField
                   label="Size"
                   name="size"
                   type="number"
                   placeholder="Insert product size"
-                  required
+                  error={validate?.stocks?.[idx]?.size}
                   onChange={(e) =>
-                    handleAddStock(i, "size", Number(e.target.value))
+                    handleAddStock(idx, "size", Number(e.target.value))
                   }
                 />
               </div>
@@ -152,8 +176,9 @@ export default function ModalAddProduct({
                   name="qty"
                   type="number"
                   placeholder="Insert product size"
+                  error={validate?.stocks?.[idx]?.qty}
                   onChange={(e) =>
-                    handleAddStock(i, "qty", Number(e.target.value))
+                    handleAddStock(idx, "qty", Number(e.target.value))
                   }
                 />
               </div>

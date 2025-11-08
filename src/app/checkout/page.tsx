@@ -89,7 +89,6 @@ export default function CheckoutPage() {
   }, [cart]);
 
   const handleCheckout = async () => {
-    console.log({ selectedAddress });
     if (selectedAddress == null) {
       showToaster("warning", "Please, add address first");
       return;

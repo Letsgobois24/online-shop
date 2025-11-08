@@ -18,6 +18,7 @@ import Label from "@/components/Elements/Input/Label";
 import productsServices from "@/services/products/services";
 import Image from "next/image";
 import TextAreaField from "@/components/Elements/Input/TextAreaField";
+import saveValidate, { ErrorType } from "../utils/saveValidate";
 
 type PropTypes = {
   setUpdatedProduct: Dispatch<SetStateAction<ProductType | null>>;
@@ -34,6 +35,7 @@ export default function ModalUpdateProduct({
   const [stockCount, setStockCount] = useState<StockType[]>(
     updatedProduct?.stock || [{ size: 0, qty: 0 }]
   );
+  const [validate, setValidate] = useState<ErrorType>();
   const [changeImage, setChangeImage] = useState<File | null>(null);
   const { showToaster } = useToaster();
 
@@ -51,8 +53,18 @@ export default function ModalUpdateProduct({
     formData.append("stock", JSON.stringify(stockCount));
     formData.delete("size");
     formData.delete("qty");
+
+    // Check if image doesn't change
     if (!changeImage) {
       formData.delete("product-image");
+    }
+
+    // Check Validation
+    const validation = saveValidate(formData, changeImage ? true : false);
+    if (validation) {
+      setValidate(validation);
+      setIsLoading(false);
+      return;
     }
 
     // Update data and upload image
@@ -78,7 +90,7 @@ export default function ModalUpdateProduct({
               type="text"
               placeholder="Insert product name"
               defaultValue={updatedProduct?.name}
-              required
+              error={validate?.name}
             />
           </div>
           <div className="col-span-2">
@@ -89,7 +101,7 @@ export default function ModalUpdateProduct({
               type="number"
               placeholder="Insert price"
               defaultValue={updatedProduct?.price}
-              required
+              error={validate?.price}
             />
           </div>
           <div className="col-span-2 sm:col-span-1">
@@ -133,6 +145,7 @@ export default function ModalUpdateProduct({
               changeFile={changeImage}
               setChangeFile={setChangeImage}
               required={false}
+              error={validate?.["product-image"]}
             />
           </div>
           <div className="col-span-2">
@@ -142,13 +155,14 @@ export default function ModalUpdateProduct({
               className="text-sm h-24"
               placeholder="Insert description product"
               defaultValue={updatedProduct?.description || ""}
+              error={validate?.description}
             />
           </div>
           <label className="col-span-2 font-semibold" htmlFor="stock">
             Stock
           </label>
-          {stockCount.map((item, i) => (
-            <React.Fragment key={i}>
+          {stockCount.map((item, idx) => (
+            <React.Fragment key={idx}>
               <div>
                 <InputField
                   label="Size"
@@ -156,9 +170,9 @@ export default function ModalUpdateProduct({
                   type="number"
                   placeholder="Insert product size"
                   defaultValue={item.size}
-                  required
+                  error={validate?.stocks?.[idx]?.size}
                   onChange={(e) =>
-                    handleAddStock(i, "size", Number(e.target.value))
+                    handleAddStock(idx, "size", Number(e.target.value))
                   }
                 />
               </div>
@@ -169,8 +183,9 @@ export default function ModalUpdateProduct({
                   type="number"
                   placeholder="Insert product qty"
                   defaultValue={item.qty}
+                  error={validate?.stocks?.[idx]?.qty}
                   onChange={(e) =>
-                    handleAddStock(i, "qty", Number(e.target.value))
+                    handleAddStock(idx, "qty", Number(e.target.value))
                   }
                 />
               </div>
