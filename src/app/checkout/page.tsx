@@ -93,20 +93,17 @@ export default function CheckoutPage() {
       },
       transaction: {
         items: profile.cart,
-        // others: {
-        //   tax: taxPrice,
-        //   delivery: deliveryPrice,
-        // },
-        // total: totalPrice,
-        total: subtotalPrice,
+        others: {
+          tax: taxPrice,
+          delivery: deliveryPrice,
+        },
+        total: totalPrice,
       },
     };
 
-    console.log(payload);
     const res = await transactionServices.generateTransaction(payload);
     window.snap.pay(res.data.data.token);
   };
-  console.log(profile?.cart);
 
   return (
     <>

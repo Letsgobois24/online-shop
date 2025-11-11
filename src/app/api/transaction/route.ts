@@ -60,10 +60,21 @@ export async function POST(request: NextRequest) {
       };
     })
   );
+  console.log(payload);
 
   const otherParams = [
-    { name: "Tax", price: payload.transaction.others.tax },
-    { name: "Delivery", price: payload.transaction.others.delivery },
+    {
+      id: "tax_price",
+      name: "Tax Price",
+      quantity: 1,
+      price: payload.transaction.others.tax,
+    },
+    {
+      id: "delivery_price",
+      name: "Delivery Price",
+      quantity: 1,
+      price: payload.transaction.others.delivery,
+    },
   ];
 
   const params = {
@@ -81,8 +92,8 @@ export async function POST(request: NextRequest) {
         address: payload.user.address.addressLine,
       },
     },
-    // item_details: [...item_details, ...otherParams],
-    item_details,
+    item_details: [...item_details, ...otherParams],
+    // item_details,
     callbacks: { finish: `${process.env.NEXT_PUBLIC_API_URL}/transaction` },
   };
 
@@ -90,7 +101,8 @@ export async function POST(request: NextRequest) {
   console.log(params);
   try {
     transaction = await createTransaction(params);
-  } catch {
+  } catch (err) {
+    console.log(err);
     return errorMessage("Failed to generate token", 400);
   }
 
