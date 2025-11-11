@@ -43,7 +43,6 @@ const saveValidate = (
   if (checkImg) {
     newError["product-image"] = validation.file(data["product-image"]);
   }
-  const flatten = Object.values(newError).flat();
   const isValid = Object.values(newError)
     .flat()
     .every((value) => value == undefined);

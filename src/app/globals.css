@@ -14,7 +14,7 @@
 }
 
 @theme {
-  --animate-shrink: shrink 3s linear forwards;
+  --animate-shrink: shrink 1s linear forwards;
   @keyframes shrink {
     0% {
       width: 100%;

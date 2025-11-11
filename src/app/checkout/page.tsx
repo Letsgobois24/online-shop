@@ -16,6 +16,8 @@ import ChangeAddress from "./components/ChangeAddress";
 import Script from "next/script";
 import transactionServices from "@/services/transaction/services";
 import { useToaster } from "@/context/ToasterContext";
+import Icon from "@/components/Elements/Icon";
+import fetchProducts from "@/utils/fetch/fetchProducts";
 
 declare global {
   interface Window {
@@ -67,26 +69,9 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     if (cart.length > 0) {
-      const getProductImage = async () => {
-        const missingItem = cart.some((item) =>
-          productCart.some(
-            (p) => p.product_id !== item.product_id || p.size !== item.size
-          )
-        );
-        if (!missingItem) {
-          const newCart = await Promise.all(
-            cart.map(async (item) => {
-              const res = await productsServices.getProduct(item.product_id);
-              return { id: item.product_id, ...item, ...res.data.data };
-            })
-          );
-          setProductCart(newCart);
-        }
-      };
-
-      getProductImage();
+      fetchProducts(cart, setProductCart);
     }
-  }, [cart]);
+  }, [cart.length]);
 
   const handleCheckout = async () => {
     if (selectedAddress == null) {
@@ -129,42 +114,49 @@ export default function CheckoutPage() {
             address={address}
             setModalChangeAddress={setModalChangeAddress}
           />
-          <div>
-            {productCart.length > 0 ? (
-              productCart.map((item) => (
-                <React.Fragment key={`${item.product_id}-${item.size}`}>
-                  <div className="my-2 flex items-center space-x-3">
-                    <Image
-                      priority
-                      src={item.image || "/image/empty-image.png"}
-                      alt={item.name || "Product Image"}
-                      width={130}
-                      height={50}
-                      className="rounded-sm object-cover"
-                    />
-                    <div className="flex-1">
-                      <div className="flex justify-between items-center">
-                        <h6 className="font-semibold">{item.name}</h6>
-                        <p className="text-sm font-semibold font-sans">
-                          {convertToIDR(item.price * item.qty || 0)}
+          <div className="mt-8">
+            {productCart ? (
+              <>
+                {productCart.map((item) => (
+                  <div key={`${item.product_id}-${item.size}`}>
+                    <div className="my-2 flex items-center space-x-3">
+                      <Image
+                        priority
+                        src={item.image || "/image/empty-image.png"}
+                        alt={item.name || "Product Image"}
+                        width={130}
+                        height={50}
+                        className="rounded-sm object-cover"
+                      />
+                      <div className="flex-1">
+                        <div className="flex justify-between items-center">
+                          <h6 className="font-semibold">{item.name}</h6>
+                          <p className="text-sm font-semibold font-sans">
+                            {convertToIDR(item.price * item.qty || 0)}
+                          </p>
+                        </div>
+                        <p className="text-gray-500 mb-2 text-sm">
+                          {item.category}
                         </p>
-                      </div>
-                      <p className="text-gray-500 mb-2 text-sm">
-                        {item.category}
-                      </p>
-                      <div className="flex space-x-1 text-gray-500 text-sm">
-                        <span>Size</span>
-                        <span>{item.size}</span>
-                      </div>
-                      <div className="flex space-x-1 text-gray-500 text-sm">
-                        <span>Quantity</span>
-                        <span>{item.qty}</span>
+                        <div className="flex space-x-1 text-gray-500 text-sm">
+                          <span>Size</span>
+                          <span>{item.size}</span>
+                        </div>
+                        <div className="flex space-x-1 text-gray-500 text-sm">
+                          <span>Quantity</span>
+                          <span>{item.qty}</span>
+                        </div>
                       </div>
                     </div>
+                    <hr className="my-3 border-gray-300" />
                   </div>
-                  <hr className="my-3 border-gray-300" />
-                </React.Fragment>
-              ))
+                ))}
+                {productCart.length !== cart.length && (
+                  <div className="flex justify-center max-w-3xl w-full">
+                    <Icon icon="loading" size={32} />
+                  </div>
+                )}
+              </>
             ) : (
               <div className="h-[50vh] flex justify-center items-center">
                 <p className="font-semibold text-2xl text-gray-500">

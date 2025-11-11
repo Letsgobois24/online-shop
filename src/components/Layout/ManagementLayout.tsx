@@ -22,7 +22,7 @@ const ManagementLayout = ({ listSidebarItem, children, title }: PropsType) => {
   };
 
   return (
-    <div className="flex">
+    <div className="flex h-screen">
       <Sidebar
         lists={listSidebarItem}
         title={title + " Panel"}

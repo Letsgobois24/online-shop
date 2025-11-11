@@ -39,8 +39,8 @@ export default function AdminproductsPage() {
         {Object.keys(products).length > 0 ? (
           <ProductsTable products={products} setUpdateData={setUpdateData} />
         ) : (
-          <div className="w-full flex justify-center">
-            <Icon icon="loading" size={24} />
+          <div className="w-full flex justify-center items-center h-[50vh]">
+            <Icon icon="loading" size={36} />
           </div>
         )}
       </div>

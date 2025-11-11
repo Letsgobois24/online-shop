@@ -21,7 +21,6 @@ export default function OrderPage() {
   useEffect(() => {
     getAllData();
   }, []);
-
   return (
     <>
       <Script
@@ -31,7 +30,7 @@ export default function OrderPage() {
       />
 
       <div className="relative overflow-x-auto mt-6">
-        {orderHistory.length > 0 ? (
+        {orderHistory && orderHistory.length > 0 ? (
           <table className="w-full text-left rtl:text-right text-gray-500">
             <thead className="text-sm text-gray-700 uppercase bg-gray-50">
               <tr>
@@ -76,8 +75,14 @@ export default function OrderPage() {
             </tbody>
           </table>
         ) : (
-          <div className="h-[88vh] flex justify-center items-center">
-            <Icon icon="loading" size={32} />
+          <div className="h-[76vh] flex justify-center items-center">
+            {orderHistory === undefined ? (
+              <p className="font-semibold text-2xl text-gray-500">
+                Your cart is empty
+              </p>
+            ) : (
+              <Icon icon="loading" size={32} />
+            )}
           </div>
         )}
       </div>

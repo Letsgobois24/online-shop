@@ -34,11 +34,9 @@ export default function DetailProduct({ params }: { params: any }) {
 
       let newCart;
       if (product) {
-        newCart = cart.map((item: any) =>
-          item.product_id === id && item.size === selectedSize
-            ? { ...item, qty: item.qty + 1 }
-            : item
-        );
+        showToaster("warning", "This product has already in cart");
+        setIsLoading(false);
+        return;
       } else {
         newCart = [...cart, { product_id: id, qty: 1, size: selectedSize }];
       }
@@ -85,7 +83,7 @@ export default function DetailProduct({ params }: { params: any }) {
               width={450}
               height={450}
               alt="Product Image"
-              className="rounded-xl my-auto"
+              className="rounded-xl my-auto h-90 object-cover hover:object-contain"
             />
             <div className="w-sm my-auto">
               <h2 className="text-2xl font-bold">{product.name}</h2>
@@ -130,7 +128,7 @@ export default function DetailProduct({ params }: { params: any }) {
             </div>
           </section>
         ) : (
-          <Icon icon="loading" size={60} />
+          <Icon icon="loading" size={36} />
         )}
       </div>
     </>

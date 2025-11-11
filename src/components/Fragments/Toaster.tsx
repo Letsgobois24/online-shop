@@ -37,7 +37,7 @@ const toasterVariant: ToasterVariant = {
   warning: {
     icon: "circleExclamation",
     iconColor: "text-orange-500",
-    barColor: "<bg-orange-5></bg-orange-5>00",
+    barColor: "bg-orange-500",
     bgColor: "bg-orange-100",
   },
 };

@@ -24,7 +24,7 @@ export function ToasterProvider({ children }: { children: React.ReactNode }) {
     if (toaster) {
       setTimeout(() => {
         setToaster(null);
-      }, 3000);
+      }, 1000);
     }
   }, [toaster]);
 

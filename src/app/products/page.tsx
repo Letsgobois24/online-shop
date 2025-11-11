@@ -82,7 +82,7 @@ export default function ProductsPage() {
             </div>
           ) : (
             <div className="w-full flex justify-center">
-              <Icon icon="loading" size={24} />
+              <Icon icon="loading" size={36} />
             </div>
           )}
         </main>

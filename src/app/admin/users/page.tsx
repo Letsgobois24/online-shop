@@ -79,7 +79,9 @@ export default function AdminUsersPage() {
             </tbody>
           </table>
         ) : (
-          <p>Loading...</p>
+          <div className="w-full flex justify-center items-center h-[50vh]">
+            <Icon icon="loading" size={36} />
+          </div>
         )}
       </div>
       {Object.keys(updatedUser).length > 0 && (

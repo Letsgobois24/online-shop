@@ -26,9 +26,9 @@ export async function PUT(request: NextRequest) {
     const data = await request.json();
     const res = await updateData("users", decoded.id, data);
     if (res) {
-      return successMessage("Success add to cart", 200);
+      return successMessage("Success update cart", 200);
     }
-    return errorMessage("Failed add to cart", 400);
+    return errorMessage("Failed update cart", 400);
   } catch {
     return errorMessage();
   }
