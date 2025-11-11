@@ -36,6 +36,7 @@ export default function CheckoutPage() {
   const { data: session } = useSession();
   const { showToaster } = useToaster();
 
+  // Price Calculation
   const getSubtotalPrice = () => {
     const totalPrice = productCart.reduce((acc, item) => {
       return acc + item.price * item.qty;
@@ -48,6 +49,7 @@ export default function CheckoutPage() {
   const deliveryPrice = 15000;
   const totalPrice = subtotalPrice + taxPrice + deliveryPrice;
 
+  // Get Profile Address
   useEffect(() => {
     const getProfile = async () => {
       const res = await userServices.getProfile();
@@ -80,7 +82,7 @@ export default function CheckoutPage() {
     }
 
     if (!profile) {
-      showToaster("warning", "Please wait a minute");
+      showToaster("warning", "Please wait to get profile data");
       return;
     }
     const payload = {
@@ -91,13 +93,20 @@ export default function CheckoutPage() {
       },
       transaction: {
         items: profile.cart,
+        // others: {
+        //   tax: taxPrice,
+        //   delivery: deliveryPrice,
+        // },
+        // total: totalPrice,
         total: subtotalPrice,
       },
     };
 
+    console.log(payload);
     const res = await transactionServices.generateTransaction(payload);
     window.snap.pay(res.data.data.token);
   };
+  console.log(profile?.cart);
 
   return (
     <>

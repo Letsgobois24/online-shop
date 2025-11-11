@@ -1,7 +1,7 @@
 "use client";
 
 import Title from "@/components/Elements/Title";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { CartType } from "@/types/cart.type";
 import { ProductType, StockType } from "@/types/product.type";
 import userServices from "@/services/user/service";

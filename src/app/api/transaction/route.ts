@@ -7,13 +7,18 @@ import { AddressType, UserType } from "@/types/user.type";
 import { CartType } from "@/types/cart.type";
 import { ProductType } from "@/types/product.type";
 
+type OthersType = {
+  tax: number;
+  delivery: number;
+};
+
 type PayloadType = {
   user: {
     fullname: string;
     email: string;
     address: Omit<AddressType, "isMain"> & Partial<Pick<AddressType, "isMain">>;
   };
-  transaction: { items: CartType[]; total: number };
+  transaction: { items: CartType[]; others: OthersType; total: number };
 };
 
 export async function GET(request: NextRequest) {
@@ -32,6 +37,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const decoded = verifyToken(request);
+  console.log(decoded);
   if (!decoded) return errorMessage();
 
   const payload: PayloadType = await request.json();
@@ -55,6 +61,11 @@ export async function POST(request: NextRequest) {
     })
   );
 
+  const otherParams = [
+    { name: "Tax", price: payload.transaction.others.tax },
+    { name: "Delivery", price: payload.transaction.others.delivery },
+  ];
+
   const params = {
     transaction_details: {
       order_id: genereteOrderId,
@@ -70,11 +81,16 @@ export async function POST(request: NextRequest) {
         address: payload.user.address.addressLine,
       },
     },
+    // item_details: [...item_details, ...otherParams],
     item_details,
     callbacks: { finish: `${process.env.NEXT_PUBLIC_API_URL}/transaction` },
   };
-  const transaction = await createTransaction(params);
-  if (!transaction) {
+
+  let transaction;
+  console.log(params);
+  try {
+    transaction = await createTransaction(params);
+  } catch {
     return errorMessage("Failed to generate token", 400);
   }
 
@@ -95,11 +111,12 @@ export async function POST(request: NextRequest) {
     cart: [],
   };
 
-  const res = await updateData("users", decoded.id, data);
-  if (!res) {
+  try {
+    await updateData("users", decoded.id, data);
+    return successMessage("success", 201, transaction);
+  } catch {
     return errorMessage("Failed to update data", 400);
   }
-  return successMessage("success", 201, transaction);
 }
 
 export async function PUT(request: NextRequest) {
