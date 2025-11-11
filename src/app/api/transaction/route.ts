@@ -37,7 +37,6 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const decoded = verifyToken(request);
-  console.log(decoded);
   if (!decoded) return errorMessage();
 
   const payload: PayloadType = await request.json();
@@ -60,7 +59,6 @@ export async function POST(request: NextRequest) {
       };
     })
   );
-  console.log(payload);
 
   const otherParams = [
     {
@@ -98,7 +96,6 @@ export async function POST(request: NextRequest) {
   };
 
   let transaction;
-  console.log(params);
   try {
     transaction = await createTransaction(params);
   } catch (err) {

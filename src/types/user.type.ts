@@ -8,6 +8,11 @@ export type AddressType = {
   recipient: string;
 };
 
+type OthersType = {
+  delivery: number;
+  tax: number;
+};
+
 export type TransactionType = {
   orderId: string;
   address: AddressType;
@@ -16,6 +21,7 @@ export type TransactionType = {
   status: "settlement" | "pending";
   token: string;
   total: number;
+  others?: OthersType;
 };
 
 export type UserType = {

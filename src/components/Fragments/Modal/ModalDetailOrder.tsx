@@ -50,6 +50,7 @@ export default function ModalDetailOrder({
     <Modal title="Detail Order" onClose={() => setDetailModal(null)}>
       <div className="p-4 md:p-5">
         <div className="grid gap-1 mb-4 grid-cols-3">
+          {/* Order Data */}
           <h2 className="col-span-3 text-lg font-bold">Order Data</h2>
           <div>
             <h4 className="font-semibold text-sm">Order ID</h4>
@@ -63,6 +64,7 @@ export default function ModalDetailOrder({
             <h4 className="text-sm font-semibold">Status</h4>
             <p>{details.status}</p>
           </div>
+          {/* Recipient Data */}
           <h2 className="col-span-3 text-lg font-bold mt-2">Recipient Data</h2>
           <div>
             <h4 className="font-semibold text-sm">Name</h4>
@@ -81,9 +83,9 @@ export default function ModalDetailOrder({
             <p>{details.address.addressLine}</p>
           </div>
         </div>
+        {/* Product Data */}
         <div className="mt-2">
           <h2 className="text-lg font-bold">Product Data</h2>
-
           {productCart.length > 0 ? (
             productCart.map((item) => (
               <div
@@ -113,6 +115,21 @@ export default function ModalDetailOrder({
             </div>
           )}
         </div>
+        {/* Others Cost */}
+        <div className="grid gap-1 mb-4 grid-cols-2">
+          <h2 className="col-span-2 text-lg font-bold">Other Cost</h2>
+          <div>
+            <h4 className="font-semibold text-sm">Delivery</h4>
+            <p className="text-sm">
+              {convertToIDR(details.others?.delivery || 0)}
+            </p>
+          </div>
+          <div>
+            <h4 className="text-sm font-semibold">Tax</h4>
+            <p>{convertToIDR(details.others?.tax || 0)}</p>
+          </div>
+        </div>
+
         <Button
           type="submit"
           variant="dark"

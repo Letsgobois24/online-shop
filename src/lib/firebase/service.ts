@@ -117,7 +117,7 @@ export async function deleteFile(pathName: string) {
     await bucket.file(pathName).delete();
     return true;
   } catch (err) {
-    console.log({ err });
+    console.log(err);
     return false;
   }
 }

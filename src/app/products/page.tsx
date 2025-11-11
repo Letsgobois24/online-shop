@@ -81,7 +81,7 @@ export default function ProductsPage() {
               ))}
             </div>
           ) : (
-            <div className="w-full flex justify-center">
+            <div className="w-full flex items-center justify-center h-[50vh]">
               <Icon icon="loading" size={36} />
             </div>
           )}

@@ -1,6 +1,6 @@
 "use client";
 
-import ModalDetailOrder from "../../../components/Fragments/Modal/ModalDetailOrder";
+import ModalDetailOrder from "@/components/Fragments/Modal/ModalDetailOrder";
 import Button from "@/components/Elements/Button";
 import Icon from "@/components/Elements/Icon";
 import userServices from "@/services/user/service";

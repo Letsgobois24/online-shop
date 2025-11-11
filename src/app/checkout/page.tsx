@@ -6,7 +6,6 @@ import type { CartType } from "@/types/cart.type";
 import { ProductType } from "@/types/product.type";
 import userServices from "@/services/user/service";
 import { useSession } from "next-auth/react";
-import productsServices from "@/services/products/services";
 import Image from "next/image";
 import { convertToIDR } from "@/utils/currency";
 import Button from "@/components/Elements/Button";
