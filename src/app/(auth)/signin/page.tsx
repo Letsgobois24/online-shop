@@ -1,97 +1,16 @@
-"use client";
+import { Metadata } from "next";
+import SignInView from "./SignInView";
 
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import React, { FormEvent, useState } from "react";
-import Alert from "@/components/Elements/Alert";
-import Button from "@/components/Elements/Button";
-import formValidate from "./utils/FormValidation";
-import InputField from "@/components/Elements/Input/InputField";
-
-export type ErrorType = {
-  email?: string;
-  password?: string;
+export const metadata: Metadata = {
+  title: "Sign In to Your Account",
+  description:
+    "Sign in to Letsgobois Shop to access your shopping cart, track orders, and enjoy member-only benefits.",
 };
 
-export default function SignInPages({
-  searchParams,
-}: {
+type PropsType = {
   searchParams: Promise<{ callbackUrl?: string; error?: string }>;
-}) {
-  const params = React.use(searchParams);
-  const { push } = useRouter();
-  const [error, setError] = useState("");
-  const [validate, setValidate] = useState<ErrorType>({});
-  const [isLoading, setIsLoading] = useState(false);
-  const callbackUrl = params.callbackUrl || "/";
+};
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    const form = e.target as HTMLFormElement;
-    const data = {
-      email: form.email.value as string,
-      password: form.password.value as string,
-    };
-
-    const validation = formValidate(data);
-    if (validation) {
-      setValidate(validation);
-      setIsLoading(false);
-      return;
-    }
-
-    try {
-      const res = await signIn("credentials", {
-        ...data,
-        redirect: false,
-        callbackUrl,
-      });
-      if (!res?.error) {
-        push(callbackUrl);
-      } else {
-        setError("Email or password is incorrect");
-        form.password.value = "";
-      }
-    } catch (err) {
-      console.log("Error: ", err);
-      setError("Login failed! Please try again later");
-    }
-    setIsLoading(false);
-    setValidate({});
-  };
-
-  return (
-    <>
-      {error && <Alert>{error}</Alert>}
-      <form className="space-y-4" onSubmit={(e) => handleSubmit(e)}>
-        <InputField
-          label="Email"
-          name="email"
-          placeholder="name@company.com"
-          type="text"
-          error={validate.email}
-        />
-        <InputField
-          type="password"
-          label="Password"
-          name="password"
-          placeholder="••••••••"
-          error={validate.password}
-        />
-
-        <Button type="submit" isLoading={isLoading} className="w-full">
-          Sign In
-        </Button>
-        <Button
-          type="button"
-          onClick={() => signIn("google", { callbackUrl, redirect: false })}
-          className="w-full"
-        >
-          Login with Google
-        </Button>
-      </form>
-    </>
-  );
+export default function SignInPage({ searchParams }: PropsType) {
+  return <SignInView searchParams={searchParams} />;
 }

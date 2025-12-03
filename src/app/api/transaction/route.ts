@@ -134,8 +134,11 @@ export async function PUT(request: NextRequest) {
 
   const { searchParams } = new URL(request.url);
   const order_id = searchParams.get("order_id");
+  if (!order_id) {
+    return errorMessage("Transaction Not Found", 404);
+  }
 
-  const transactionDetail = await getTransaction(order_id || "");
+  const transactionDetail = await getTransaction(order_id);
   const user: UserType = await getDataById("users", decoded.id);
   const transactionIdx = user.transaction?.findIndex(
     (item) => item.orderId === order_id

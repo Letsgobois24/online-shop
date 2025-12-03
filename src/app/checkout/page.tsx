@@ -1,22 +1,12 @@
-"use client";
-
-import Title from "@/components/Elements/Title";
-import React, { useEffect, useState } from "react";
-import type { CartType } from "@/types/cart.type";
-import { ProductType } from "@/types/product.type";
-import userServices from "@/services/user/service";
-import { useSession } from "next-auth/react";
-import Image from "next/image";
-import { convertToIDR } from "@/utils/currency";
-import Button from "@/components/Elements/Button";
-import { UserType } from "@/types/user.type";
-import ModalChangeAddress from "./components/ModalChangeAddress";
-import ChangeAddress from "./components/ChangeAddress";
 import Script from "next/script";
-import transactionServices from "@/services/transaction/services";
-import { useToaster } from "@/context/ToasterContext";
-import Icon from "@/components/Elements/Icon";
-import fetchProducts from "@/utils/fetch/fetchProducts";
+import CheckoutView from "./CheckoutView";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Checkout & Payment",
+  description:
+    "Complete your order securely. Choose the payment method and shipping option that suits you best.",
+};
 
 declare global {
   interface Window {
@@ -25,186 +15,14 @@ declare global {
 }
 
 export default function CheckoutPage() {
-  const [profile, setProfile] = useState<UserType | null>(null);
-  const [productCart, setProductCart] = useState<
-    (CartType & ProductType)[] | []
-  >([]);
-  const [selectedAddress, setSelectedAddress] = useState<number | null>(null);
-  const [modalChangeAddress, setModalChangeAddress] = useState(false);
-
-  const { data: session } = useSession();
-  const { showToaster } = useToaster();
-
-  // Price Calculation
-  const getSubtotalPrice = () => {
-    const totalPrice = productCart.reduce((acc, item) => {
-      return acc + item.price * item.qty;
-    }, 0);
-    return totalPrice;
-  };
-  const taxRatio = 12;
-  const subtotalPrice = getSubtotalPrice();
-  const taxPrice = Math.round((taxRatio / 100) * subtotalPrice);
-  const deliveryPrice = 15000;
-  const totalPrice = subtotalPrice + taxPrice + deliveryPrice;
-
-  // Get Profile Address
-  useEffect(() => {
-    const getProfile = async () => {
-      const res = await userServices.getProfile();
-      const profile: UserType = res.data.data;
-      setProfile(profile);
-      if (!profile.address) return;
-      const mainAddressIdx = profile.address.findIndex(
-        (address) => address.isMain === true
-      );
-      setSelectedAddress(mainAddressIdx);
-    };
-
-    if (session) getProfile();
-  }, [session]);
-
-  const cart = profile?.cart || [];
-  const address =
-    selectedAddress != null ? profile?.address[selectedAddress] : null;
-
-  useEffect(() => {
-    if (cart.length > 0) {
-      fetchProducts(cart, setProductCart);
-    }
-  }, [cart.length]);
-
-  const handleCheckout = async () => {
-    if (selectedAddress == null) {
-      showToaster("warning", "Please, add address first");
-      return;
-    }
-
-    if (!profile) {
-      showToaster("warning", "Please wait to get profile data");
-      return;
-    }
-    const payload = {
-      user: {
-        fullname: profile.fullname,
-        email: profile.email,
-        address: profile.address[selectedAddress],
-      },
-      transaction: {
-        items: profile.cart,
-        others: {
-          tax: taxPrice,
-          delivery: deliveryPrice,
-        },
-        total: totalPrice,
-      },
-    };
-
-    const res = await transactionServices.generateTransaction(payload);
-    window.snap.pay(res.data.data.token);
-  };
-
   return (
-    <>
+    <div className="px-4 py-6">
       <Script
         src={process.env.NEXT_PUBLIC_MIDTRANS_SNAP_URL}
         data-client-key={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}
         strategy="lazyOnload"
       />
-
-      <div className="flex flex-col sm:flex-row gap-12 mx-auto max-w-3xl w-full">
-        <section className="flex-2 w-full">
-          <Title size="medium">Checkout</Title>
-          <ChangeAddress
-            address={address}
-            setModalChangeAddress={setModalChangeAddress}
-          />
-          <div className="mt-8">
-            {productCart ? (
-              <>
-                {productCart.map((item) => (
-                  <div key={`${item.product_id}-${item.size}`}>
-                    <div className="my-2 flex items-center space-x-3">
-                      <Image
-                        priority
-                        src={item.image || "/image/empty-image.png"}
-                        alt={item.name || "Product Image"}
-                        width={130}
-                        height={50}
-                        className="rounded-sm object-cover"
-                      />
-                      <div className="flex-1">
-                        <div className="flex justify-between items-center">
-                          <h6 className="font-semibold">{item.name}</h6>
-                          <p className="text-sm font-semibold font-sans">
-                            {convertToIDR(item.price * item.qty || 0)}
-                          </p>
-                        </div>
-                        <p className="text-gray-500 mb-2 text-sm">
-                          {item.category}
-                        </p>
-                        <div className="flex space-x-1 text-gray-500 text-sm">
-                          <span>Size</span>
-                          <span>{item.size}</span>
-                        </div>
-                        <div className="flex space-x-1 text-gray-500 text-sm">
-                          <span>Quantity</span>
-                          <span>{item.qty}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <hr className="my-3 border-gray-300" />
-                  </div>
-                ))}
-                {productCart.length !== cart.length && (
-                  <div className="flex justify-center max-w-3xl w-full">
-                    <Icon icon="loading" size={32} />
-                  </div>
-                )}
-              </>
-            ) : (
-              <div className="h-[50vh] flex justify-center items-center">
-                <p className="font-semibold text-2xl text-gray-500">
-                  Your cart is empty
-                </p>
-              </div>
-            )}
-          </div>
-        </section>
-        <section className="flex-1">
-          <Title size="medium">Summary</Title>
-          <div className="flex justify-between items-center text-sm">
-            <span>Subtotal</span>
-            <span className="font-sans">{convertToIDR(subtotalPrice)}</span>
-          </div>
-          <div className="flex justify-between items-center text-sm">
-            <span>Delivery</span>
-            <span className="font-sans">{convertToIDR(deliveryPrice)}</span>
-          </div>
-          <div className="flex justify-between items-center text-sm">
-            <span>Taxes({taxRatio}%)</span>
-            <span className="font-sans">{convertToIDR(taxPrice)}</span>
-          </div>
-          <hr className="my-6 border-gray-300" />
-          <div className="flex justify-between items-center font-semibold">
-            <span>Total</span>
-            <span className="font-sans">{convertToIDR(totalPrice)}</span>
-          </div>
-          <hr className="my-6 border-gray-300" />
-          <Button className="w-full" variant="dark" onClick={handleCheckout}>
-            Process Payment
-          </Button>
-        </section>
-      </div>
-      {modalChangeAddress && profile && (
-        <ModalChangeAddress
-          selectedAddress={selectedAddress}
-          profile={profile}
-          setProfile={setProfile}
-          setSelectedAddress={setSelectedAddress}
-          setModalChangeAddress={setModalChangeAddress}
-        />
-      )}
-    </>
+      <CheckoutView />;
+    </div>
   );
 }

@@ -1,3 +1,5 @@
+"use client";
+
 import { SessionProvider } from "next-auth/react";
 import { ToasterProvider } from "@/context/ToasterContext";
 import type { ReactNode } from "react";

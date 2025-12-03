@@ -1,5 +1,5 @@
 import validation from "@/utils/validation/profileValidation";
-import { ErrorType } from "../page";
+import { ErrorType } from "../SignInView";
 
 type DataType = {
   email: string;

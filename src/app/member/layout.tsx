@@ -1,6 +1,13 @@
 import { type ReactNode } from "react";
 import { type ListsType } from "@/components/Fragments/Sidebar/Sidebar";
 import ManagementLayout from "@/components/Layout/ManagementLayout";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "My Profile",
+  description:
+    "Manage your personal information, shipping addresses, and account security settings.",
+};
 
 const listSidebarItem: ListsType = [
   {

@@ -1,6 +1,15 @@
 import { type ReactNode } from "react";
 import { ListsType } from "@/components/Fragments/Sidebar/Sidebar";
 import ManagementLayout from "@/components/Layout/ManagementLayout";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Admin Panel",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 const listSidebarItem: ListsType = [
   {
