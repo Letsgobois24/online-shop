@@ -77,7 +77,8 @@ export default function CartView() {
 
   const handleChangeCart = async () => {
     try {
-      const res = await userServices.addToCart({ cart: debouncedCart });
+      console.log(debouncedCart);
+      const res = await userServices.updateCart(debouncedCart);
       showToaster("success", res.data.message);
     } catch (err: any) {
       showToaster("danger", err.response.data.message);

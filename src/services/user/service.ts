@@ -27,8 +27,9 @@ export const userServices = {
   updateProfile: (data: any) => instance.put(memberEndpoint.profile, data),
   changePassword: (data: ChangePasswordType) =>
     instance.put(memberEndpoint.changePassword, data),
-  addToCart: (data: any) => instance.put(memberEndpoint.cart, data),
   getCart: () => instance.get(memberEndpoint.cart),
+  addToCart: (data: any) => instance.post(memberEndpoint.cart, data),
+  updateCart: (data: any) => instance.put(memberEndpoint.cart, data),
 };
 
 export default userServices;

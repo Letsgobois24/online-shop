@@ -11,7 +11,6 @@ import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import userServices from "@/services/user/service";
 import { useToaster } from "@/context/ToasterContext";
-import { CartType } from "@/types/cart.type";
 
 type ParamsType = { id: string };
 export default function DetailProduct({ params }: { params: any }) {
@@ -23,32 +22,26 @@ export default function DetailProduct({ params }: { params: any }) {
   const [product, setProduct] = useState<ProductType | null>(null);
   const [selectedSize, setSelectedSize] = useState<null | number>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [cart, setCart] = useState<CartType[] | []>([]);
 
   const handleAddToCart = async () => {
     if (selectedSize) {
       setIsLoading(true);
-      const product = cart.find(
-        (item) => item.product_id === id && item.size === selectedSize
-      );
-
-      let newCart;
-      if (product) {
-        showToaster("warning", "This product has already in cart");
-        setIsLoading(false);
-        return;
-      } else {
-        newCart = [...cart, { product_id: id, qty: 1, size: selectedSize }];
-      }
-      setCart(newCart);
-
       try {
-        const res = await userServices.addToCart({ cart: newCart });
+        const res = await userServices.addToCart({
+          product_id: id,
+          qty: 1,
+          size: selectedSize,
+        });
         if (res) {
           showToaster("success", res.data.message);
         }
-      } catch {
-        showToaster("danger", "Failed add to cart");
+      } catch (err: any) {
+        console.log(err.response.status);
+        if (err.response.status == 409) {
+          showToaster("warning", err.response.data.message);
+        } else {
+          showToaster("danger", err.response.data.message);
+        }
       }
       setIsLoading(false);
     }
@@ -61,16 +54,6 @@ export default function DetailProduct({ params }: { params: any }) {
     };
     getProductData();
   }, []);
-
-  useEffect(() => {
-    if (status == "authenticated") {
-      const getCart = async () => {
-        const res = await userServices.getCart();
-        setCart(res.data.data ?? []);
-      };
-      getCart();
-    }
-  }, [status]);
 
   return (
     <>
