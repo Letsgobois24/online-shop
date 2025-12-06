@@ -68,29 +68,26 @@ export default function CartView() {
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedCart(cart);
-    }, 1000);
+    }, 1500);
 
-    return () => {
-      clearTimeout(handler);
-    };
+    return () => clearTimeout(handler);
   }, [cart]);
 
-  const handleChangeCart = async () => {
+  useEffect(() => {
+    if (isUpdateCart) {
+      handleChangeCart(debouncedCart);
+      setIsUpdateCart(false);
+    }
+  }, [debouncedCart]);
+
+  const handleChangeCart = async (latestCart: CartType[]) => {
     try {
-      console.log(debouncedCart);
-      const res = await userServices.updateCart(debouncedCart);
+      const res = await userServices.updateCart(latestCart);
       showToaster("success", res.data.message);
     } catch (err: any) {
       showToaster("danger", err.response.data.message);
     }
   };
-
-  useEffect(() => {
-    if (isUpdateCart) {
-      handleChangeCart();
-      setIsUpdateCart(false);
-    }
-  }, [debouncedCart]);
 
   // Handle Quantity Update
   const handleQtyChange = (

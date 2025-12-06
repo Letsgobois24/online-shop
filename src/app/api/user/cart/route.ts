@@ -5,6 +5,7 @@ import { errorMessage, successMessage } from "@/utils/response";
 import { CartType } from "@/types/cart.type";
 import { UserType } from "@/types/user.type";
 import { ProductType, StockType } from "@/types/product.type";
+import getCartDiff from "@/app/cart/utils/getCartDiff";
 
 export async function GET(request: NextRequest) {
   try {
@@ -97,93 +98,67 @@ export async function PUT(request: NextRequest) {
     ).cart;
     const newCart: CartType[] = await request.json();
 
-    console.log(lastCart);
-    console.log(newCart);
+    const diffCart = getCartDiff(lastCart, newCart);
+
+    type StocksType = {
+      id: string;
+      stock: StockType[];
+    };
+
+    let products: StocksType[] = [];
+
+    for (const cart of diffCart) {
+      const sameProductIdx = products.findIndex(
+        (product) => product.id == cart.product_id
+      );
+      let product;
+      if (sameProductIdx == -1) {
+        product = await getDataById("products", cart.product_id);
+        products.push({ id: cart.product_id, stock: product.stock });
+      } else {
+        product = products[sameProductIdx];
+      }
+    }
+
+    for (const cart of diffCart) {
+      const productIdx = products.findIndex(
+        (product) => product.id == cart.product_id
+      );
+      const newStock = products[productIdx].stock.map((stock) => {
+        if (stock.size == cart.size) {
+          return { ...stock, qty: stock.qty - cart.qty };
+        }
+        return stock;
+      });
+      products[productIdx].stock = newStock;
+    }
 
     // Update Stock
-    // let updatedCart: CartType[];
-    // try {
-    //   for (const cart of lastCart) {
-    //     const sameSize = newCart.find(
-    //       (findedItem) => findedItem.size == cart.size
-    //     );
-    //     if(sameSize){}
-    //   }
-    // } catch(e) {
-    //   console.log(e);
-    //   return errorMessage("Failed to update stock");
-    // }
-    let newStocks: CartType[] = [];
     try {
-      for (const cart of lastCart) {
-        console.log(cart);
-        const sameSize = newCart.find(
-          (item) => item.product_id == cart.product_id && item.size == cart.size
-        );
-        if (sameSize) {
-          console.log(sameSize);
-          console.log(cart.product_id);
-          const { stock: stocks }: { stock: StockType[] } = await getDataById(
-            "products",
-            cart.product_id
-          );
-          console.log(stocks);
-          const stock = stocks.find((item) => item.size == sameSize.size);
-          console.log({ ...stock, product_id: cart.product_id });
-          if (stock) {
-            console.log(cart.qty);
-            console.log(sameSize.qty);
-            newStocks.push({
-              ...sameSize,
-              product_id: cart.product_id,
-              qty: stock.qty - cart.qty + sameSize.qty,
-            });
-          }
-          // console.log(sameSize);
-          // const { stock: stocks }: { stock: StockType[] } = await getDataById(
-          //   "products",
-          //   cart.product_id
-          // );
-          // const newStocks = stocks.map((stock) => {
-          //   if (stock.size == cart.size) {
-          //     return { ...stock, qty: stock.qty - cart.qty + sameSize.qty };
-          //   }
-          //   return stock;
-          // });
-
-          // console.log(newStocks);
-
-          // const newStock = [
-          //   ...st
-          // ]
-
-          // const updatedStock = {
-          //   ...cart,
-          // const res = await updateData("products", cart.product_id, {
-          //   stock: newStock,
-          // });
-          // if (!res) throw new Error();
+      for (const product of products) {
+        const res = await updateData("products", product.id, {
+          stock: product.stock,
+        });
+        if (!res) {
+          throw new Error();
         }
       }
-      console.log(newStocks);
-    } catch (e) {
-      console.log(e);
-      return errorMessage("Failed to update stocks");
+    } catch {
+      errorMessage("Failed to update stock");
     }
 
     // Update Cart
-    // try {
-    //   const res = await updateData("users", decoded.id, {
-    //     cart: newCart,
-    //   });
-    //   if (!res) {
-    //     throw new Error();
-    //   }
-    // } catch {
-    //   return errorMessage("Failed to update cart");
-    // }
+    try {
+      const res = await updateData("users", decoded.id, { cart: newCart });
+      if (!res) {
+        throw new Error();
+      }
+    } catch {
+      return errorMessage("Failed to update cart");
+    }
+
     return successMessage("Success to update cart", 200);
-  } catch {
+  } catch (e) {
     return errorMessage();
   }
 }
