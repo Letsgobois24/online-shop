@@ -158,7 +158,7 @@ export async function PUT(request: NextRequest) {
     }
 
     return successMessage("Success to update cart", 200);
-  } catch (e) {
+  } catch {
     return errorMessage();
   }
 }
