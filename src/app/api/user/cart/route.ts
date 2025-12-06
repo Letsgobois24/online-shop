@@ -88,6 +88,11 @@ export async function POST(request: NextRequest) {
   }
 }
 
+type StocksType = {
+  id: string;
+  stock: StockType[];
+};
+
 export async function PUT(request: NextRequest) {
   try {
     const decoded = verifyToken(request);
@@ -100,12 +105,7 @@ export async function PUT(request: NextRequest) {
 
     const diffCart = getCartDiff(lastCart, newCart);
 
-    type StocksType = {
-      id: string;
-      stock: StockType[];
-    };
-
-    let products: StocksType[] = [];
+    const products: StocksType[] = [];
 
     for (const cart of diffCart) {
       const sameProductIdx = products.findIndex(

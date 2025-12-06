@@ -49,37 +49,6 @@ export default function CartView() {
     setProductCart(newProductCart);
   };
 
-  useEffect(() => {
-    const getCart = async () => {
-      const res = await userServices.getCart();
-      setCart(res.data.data);
-    };
-
-    if (session) getCart();
-  }, [session]);
-
-  useEffect(() => {
-    if (cart.length > 0 && !isUpdateCart) {
-      fetchProducts(cart, setProductCart);
-    }
-  }, [cart.length]);
-
-  // Handle Change Cart
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedCart(cart);
-    }, 1500);
-
-    return () => clearTimeout(handler);
-  }, [cart]);
-
-  useEffect(() => {
-    if (isUpdateCart) {
-      handleChangeCart(debouncedCart);
-      setIsUpdateCart(false);
-    }
-  }, [debouncedCart]);
-
   const handleChangeCart = async (latestCart: CartType[]) => {
     try {
       const res = await userServices.updateCart(latestCart);
@@ -157,6 +126,37 @@ export default function CartView() {
   const findMaxQty = (size: number, stock: StockType[]) => {
     return stock.find((item) => item.size === size)?.qty;
   };
+
+  useEffect(() => {
+    const getCart = async () => {
+      const res = await userServices.getCart();
+      setCart(res.data.data);
+    };
+
+    if (session) getCart();
+  }, [session]);
+
+  useEffect(() => {
+    if (cart.length > 0 && !isUpdateCart) {
+      fetchProducts(cart, setProductCart);
+    }
+  }, [cart.length]);
+
+  // Handle Change Cart
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedCart(cart);
+    }, 1500);
+
+    return () => clearTimeout(handler);
+  }, [cart]);
+
+  useEffect(() => {
+    if (isUpdateCart) {
+      handleChangeCart(debouncedCart);
+      setIsUpdateCart(false);
+    }
+  }, [debouncedCart]);
 
   return (
     <div className="flex flex-col sm:flex-row gap-12 mx-auto max-w-3xl w-full">
